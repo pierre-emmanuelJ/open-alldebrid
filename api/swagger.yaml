@@ -1,0 +1,217 @@
+openapi: 3.0.0
+info:
+  title: Alldebrid API
+  description: Welcome to the Alldebrid API v4 ! You can use this API to access various
+    Alldebrid services from custom applications or scripts.
+  version: 4.0.0
+servers:
+- url: https://api.alldebrid.com/v4
+  description: "Optional server description, e.g. Main (production) server"
+paths:
+  /hosts:
+    get:
+      summary: "Use these endpoints to get a list of all the hosts we support, and\
+        \ the services of redirection (adf.ly, bit.ly) or protection we can extract\
+        \ links from."
+      description: Use this endpoint to retrieve informations about what hosts we
+        support and all related informations about it.
+      parameters:
+      - name: agent
+        in: query
+        description: Your software user-agent.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: hostOnly
+        in: query
+        description: Endpoint will only return "hosts" data
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Use this endpoint to retrieve informations about what hosts
+            we support and all related informations about it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+components:
+  schemas:
+    inline_response_200:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            hosts:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Host name.
+                    example: uptobox
+                  type:
+                    type: string
+                    description: Either "premium" or "free". Premium hosts need a
+                      premium subscription.
+                    example: premium
+                  domains:
+                    type: array
+                    description: Host domains.
+                    items:
+                      type: string
+                      example: uptobox.com
+                  regexp:
+                    type: string
+                    description: Rgexp matching link format that Alldebrid supports.
+                    example: "(uptostream\\.com/iframe/([0-9a-zA-Z]{12}))|((uptostream|uptobox)\\\
+                      .com/([0-9a-zA-Z]{12}))"
+                  status:
+                    type: boolean
+                    description: "Is the host currently (< 5 min) working on Alldebrid\
+                      \ (only tested on some hosts, updated every ~ 10 min)."
+                example:
+                  regexp: "(uptostream\\.com/iframe/([0-9a-zA-Z]{12}))|((uptostream|uptobox)\\\
+                    .com/([0-9a-zA-Z]{12}))"
+                  name: uptobox
+                  domains:
+                  - uptobox.com
+                  - uptobox.com
+                  type: premium
+                  status: true
+            streams:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: uptobox
+                  type:
+                    type: string
+                    example: premium
+                  domains:
+                    type: array
+                    items:
+                      type: string
+                      example: uptobox.com
+                  regexp:
+                    type: string
+                    example: "(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/[^/]+/b/(?P<id>\\\
+                      d+))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/(?P<id>[^/]+)/videos/highlights)"
+                  status:
+                    type: boolean
+                example:
+                  regexp: "(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/[^/]+/b/(?P<id>\\\
+                    d+))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/(?P<id>[^/]+)/videos/highlights)"
+                  name: uptobox
+                  domains:
+                  - uptobox.com
+                  - uptobox.com
+                  type: premium
+                  status: true
+            redirectors:
+              type: object
+              additionalProperties:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: uptobox
+                  type:
+                    type: string
+                    example: premium
+                  domains:
+                    type: array
+                    items:
+                      type: string
+                      example: uptobox.com
+                  regexp:
+                    type: string
+                    example: "((dl-protect1.com/[0-9a-z]+))|((dl\\-protect1\\.co/go/[0-9a-zA-Z_\\\
+                      -]+))|((dl\\-protect\\.net/[0-9a-z]+))"
+                  status:
+                    type: boolean
+                example:
+                  regexp: "((dl-protect1.com/[0-9a-z]+))|((dl\\-protect1\\.co/go/[0-9a-zA-Z_\\\
+                    -]+))|((dl\\-protect\\.net/[0-9a-z]+))"
+                  name: uptobox
+                  domains:
+                  - uptobox.com
+                  - uptobox.com
+                  type: premium
+                  status: true
+          example:
+            redirectors:
+              key:
+                regexp: "((dl-protect1.com/[0-9a-z]+))|((dl\\-protect1\\.co/go/[0-9a-zA-Z_\\\
+                  -]+))|((dl\\-protect\\.net/[0-9a-z]+))"
+                name: uptobox
+                domains:
+                - uptobox.com
+                - uptobox.com
+                type: premium
+                status: true
+            hosts:
+              key:
+                regexp: "(uptostream\\.com/iframe/([0-9a-zA-Z]{12}))|((uptostream|uptobox)\\\
+                  .com/([0-9a-zA-Z]{12}))"
+                name: uptobox
+                domains:
+                - uptobox.com
+                - uptobox.com
+                type: premium
+                status: true
+            streams:
+              key:
+                regexp: "(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/[^/]+/b/(?P<id>\\\
+                  d+))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/(?P<id>[^/]+)/videos/highlights)"
+                name: uptobox
+                domains:
+                - uptobox.com
+                - uptobox.com
+                type: premium
+                status: true
+      example:
+        data:
+          redirectors:
+            key:
+              regexp: "((dl-protect1.com/[0-9a-z]+))|((dl\\-protect1\\.co/go/[0-9a-zA-Z_\\\
+                -]+))|((dl\\-protect\\.net/[0-9a-z]+))"
+              name: uptobox
+              domains:
+              - uptobox.com
+              - uptobox.com
+              type: premium
+              status: true
+          hosts:
+            key:
+              regexp: "(uptostream\\.com/iframe/([0-9a-zA-Z]{12}))|((uptostream|uptobox)\\\
+                .com/([0-9a-zA-Z]{12}))"
+              name: uptobox
+              domains:
+              - uptobox.com
+              - uptobox.com
+              type: premium
+              status: true
+          streams:
+            key:
+              regexp: "(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/[^/]+/b/(?P<id>\\\
+                d+))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/(?P<id>[^/]+)/videos/highlights)"
+              name: uptobox
+              domains:
+              - uptobox.com
+              - uptobox.com
+              type: premium
+              status: true
+        status: success
