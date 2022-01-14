@@ -1,0 +1,2659 @@
+openapi: 3.0.0
+info:
+  description: Welcome to the OpenAPI Alldebrid API v4 !<br /> You can use this API
+    to access various Alldebrid services from custom applications or scripts.<br />
+    <br /> API is organized around REST,<br /> returns JSON-encoded responses and
+    use standard HTTP response codes.<br /> <br /> All calls are to be made on the
+    HTTPS endpoints.<br /> Some are public, others require to be authentificated with
+    an apikey (see Authentication).<br /> <br /> You must also identify your apps
+    or script with a meaningfull agent parameter.<br /> <br /> This API version is
+    namespaced as v4, as such all endpoint start with /v4/,<br /> such like http://api.alldebrid.com/v4/ping?agent=apiShowcase.<br
+    /> <br /> This API v4 should be the final version regarding general response format
+    and errors (hopefully).<br />
+  title: Alldebrid API
+  version: 4.0.0
+servers:
+- description: Optional server description, e.g. Main (production) server
+  url: https://api.alldebrid.com/v4
+paths:
+  /hosts:
+    get:
+      description: Use this endpoint to retrieve informations about what hosts we
+        support and all related informations about it.
+      parameters:
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Endpoint will only return "hosts" data
+        explode: true
+        in: query
+        name: hostOnly
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: Use this endpoint to retrieve informations about what hosts
+            we support and all related informations about it.
+      summary: Use this endpoint to retrieve informations about what hosts we support.
+  /hosts/domains:
+    get:
+      description: Use this endpoint to only retrieve the list of supported hosts
+        domains and redirectors as an array.<br /> <br /> This will also include any
+        alternative domain the hosts or redirectors have.<br /> Please use regexps
+        availables in /hosts or /user/hosts endpoints to validate supported links.<br
+        />
+      parameters:
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+          description: Use this endpoint to retrieve informations about what hosts
+            we support and all related informations about it.
+      summary: Use this endpoint to only retrieve the list of supported hosts domains
+        and redirectors as an array.
+  /hosts/priority:
+    get:
+      description: Use this endpoint to retrieve an ordered list of main domain of
+        hosts, from more open to more restricted.
+      parameters:
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+          description: Use this endpoint to retrieve informations about what hosts
+            we support and all related informations about it.
+      summary: Not all hosts are created equal, so some hosts are more limited than
+        other.
+  /user:
+    get:
+      description: Use this endpoint to get user informations.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+          description: Use this endpoint to retrieve informations about what hosts
+            we support and all related informations about it.
+      security:
+      - bearerAuth: []
+      summary: Use this endpoint to get user informations.
+  /user/hosts:
+    get:
+      description: This endpoint retrieves a complete list of all available hosts
+        for this user.<br /> Depending of the account subscription status (free user,
+        trial mode, premium user),<br /> the list and limitations will vary.<br />
+        <br /> The limits and quota are updated in real time. Use this page to have
+        an<br /> up-to-date list of service the user can use on Alldebrid.<br /> <br
+        /> Quotas will reset every day for premium users.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Endpoint will only return "hosts" data
+        explode: true
+        in: query
+        name: hostOnly
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: This endpoint retrieves a complete list of all available hosts for
+        this user.
+  /user/notification/clear:
+    get:
+      description: This endpoint clears a user notification with its code. Current
+        notifications codes can be retreive from the /user endpoint.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Notification code to clear
+        explode: true
+        in: query
+        name: code
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: This endpoint clears a user notification with its code.
+  /link/infos:
+    get:
+      description: Use this endpoint to retrieve informations about a link.<br />
+        If it is in our systems, you'll have the filename and size (if available).<br
+        /> <br /> If the host is not supported or the link is down, an error will
+        be<br /> returned for that link.<br /> <br /> This endpoint only support host
+        links, not redirectors links. Use the<br /> link/redirector endpoint for this.<br
+        />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Link password (supported on uptobox / 1fichier).
+        explode: true
+        in: query
+        name: password
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The link or array of links you request informations about.
+        explode: true
+        in: query
+        name: link[]
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Use this endpoint to retrieve informations about a link.
+  /link/redirector:
+    get:
+      description: Use this endpoint to retrieve links protected by a redirector or
+        link protector.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: The redirector or protector link to extract links.
+        explode: true
+        in: query
+        name: link
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_6'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Use this endpoint to retrieve links protected by a redirector or link
+        protector.
+  /link/unlock:
+    get:
+      description: This endpoint can return a delayed ID. In that case, you must follow
+        the delayed link flow.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: The redirector or protector link to extract links.
+        explode: true
+        in: query
+        name: link
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: Link password (supported on uptobox / 1fichier).
+        explode: true
+        in: query
+        name: password
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_7'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: This endpoint unlocks a given link.
+  /link/streaming:
+    get:
+      description: 'First hit the usual link/unlock endpoint. Two cases:<br /> <br
+        /> Stream link has only one quality : downloading link is available immediatly.<br
+        /> <br /> OR<br /> <br /> Stream links has multiple qualities : you must select
+        the desired<br /> quality to obtain a download link or delayed id by using
+        the<br /> link/streaming endpoint.<br /> <br /> Depending of the stream website,
+        you''ll either get a download link, or a<br /> delayed id (see Delayed link
+        section for delayed links).<br />'
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: The link ID you received from the /link/unlock call.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The stream ID you choosed from the stream qualities list returned
+          by /link/unlock.
+        explode: true
+        in: query
+        name: stream
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_8'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: The unlocking flow for streaming link is a bit more complex.
+  /link/delayed:
+    get:
+      description: This endpoint give the status of a delayed link.<br /> <br /> Some
+        links need time to generate, this endpoint send the status of such delayed
+        links.<br /> <br /> You should pool every 5 seconds or more the link/delayed
+        endpoint until given the download link.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Delayed ID received in /link/unlock.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_9'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: This endpoint give the status of a delayed link.
+  /magnet/upload:
+    get:
+      description: Upload a magnet with its URI or hash.<br /> You can either send
+        the magnets in GET parameters, or in POST.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Magnet(s) URI or hash. Must send magnet either in GET param or
+          in POST data.
+        explode: true
+        in: query
+        name: magnets[]
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_10'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Upload a magnet with its URI or hash.
+  /magnet/upload/file:
+    post:
+      description: Upload torrent files.<br /> This endpoint should be POSTed on.<br
+        /> It expects a multipart formdata file upload.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                '[]file':
+                  format: binary
+                  type: string
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_11'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Upload torrent files.
+  /magnet/status:
+    get:
+      description: 'Get the status of current magnets, or only one if you specify
+        a magnet ID.<br /> !TODO: Add live magnet status.<br />'
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Magnet ID.
+        explode: true
+        in: query
+        name: id
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Magnets status filter. Either active, ready, expired or error
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Session ID for Live mode (see Live Mode).
+        explode: true
+        in: query
+        name: session
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Counter for Live mode (see Live Mode).
+        explode: true
+        in: query
+        name: counter
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_12'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Get the status of current magnets, or only one if you specify a magnet
+        ID.
+  /magnet/delete:
+    get:
+      description: Delete a magnet.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Magnet ID.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_13'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Delete a magnet.
+  /magnet/restart:
+    get:
+      description: Restart a failed magnet, or multiple failed magnets at once.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Array of Magnet ID.
+        explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_14'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Restart a failed magnet, or multiple failed magnets at once.
+  /magnet/instant:
+    get:
+      description: Check if a magnet is available instantly.<br /> You can either
+        send the magnets in GET parameters, or in POST.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Magnets URI or hash you wish to check instant availability, can
+          be one or many links
+        explode: true
+        in: query
+        name: magnets[]
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_15'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Check if a magnet is available instantly.
+  /user/links:
+    get:
+      description: Use this endpoint to get links the user saved for later use.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_16'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Use this endpoint to get links the user saved for later use.
+  /user/links/save:
+    get:
+      description: Save a link.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Links to save.
+        explode: true
+        in: query
+        name: link[]
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_17'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Save a link.
+  /user/links/delete:
+    get:
+      description: Delete a saved link.
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      - description: Link to delete.
+        explode: true
+        in: query
+        name: link
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Links to delete.
+        explode: true
+        in: query
+        name: link[]
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_18'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Delete a saved link.
+  /user/history:
+    get:
+      description: Use this endpoint to get recent links.<br /> Recent link logging
+        being disabled by default,<br /> this will return nothing until history logging
+        has been activated in your account settings.<br /> <br /> Links older than
+        3 days are automatically deleted from the recent history.<br /> To keep links
+        in your account, use the Saved links.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_16'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Use this endpoint to get recent links.
+  /user/history/delete:
+    get:
+      description: Use this endpoint to delete all links currently in your recent
+        links history.<br /> Links older than 3 days are automatically deleted from
+        the recent history.<br />
+      parameters:
+      - description: Deprecated User apikey (Use Bearer Auth in header).
+        explode: true
+        in: query
+        name: apikey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Your software user-agent.
+        explode: true
+        in: query
+        name: agent
+        required: true
+        schema:
+          default: open-alldebrid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_19'
+          description: This endpoint retrieves a complete list of all available hosts
+            for this user
+      security:
+      - bearerAuth: []
+      summary: Use this endpoint to delete all links currently in your recent links
+        history.
+components:
+  requestBodies:
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+  schemas:
+    ErrorCodes:
+      description: You can find all possible errors here, available in PHP array and
+        JSON format if needed.<br /> Some errors will return an HTTP code 401 or 429,
+        depending of the error.<br />
+      enum:
+      - GENERIC
+      - "404"
+      - AUTH_MISSING_AGENT
+      - AUTH_BAD_AGENT
+      - AUTH_MISSING_APIKEY
+      - AUTH_BAD_APIKEY
+      - AUTH_BLOCKED
+      - AUTH_USER_BANNED
+      - LINK_IS_MISSING
+      - LINK_HOST_NOT_SUPPORTED
+      - LINK_DOWN
+      - LINK_PASS_PROTECTED
+      - LINK_HOST_UNAVAILABLE
+      - LINK_TOO_MANY_DOWNLOADS
+      - LINK_HOST_FULL
+      - LINK_HOST_LIMIT_REACHED
+      - LINK_ERROR
+      - REDIRECTOR_NOT_SUPPORTED
+      - REDIRECTOR_ERROR
+      - STREAM_INVALID_GEN_ID
+      - STREAM_INVALID_STREAM_ID
+      - DELAYED_INVALID_ID
+      - FREE_TRIAL_LIMIT_REACHED
+      - MUST_BE_PREMIUM
+      - MAGNET_INVALID_ID
+      - MAGNET_INVALID_URI
+      - MAGNET_INVALID_FILE
+      - MAGNET_FILE_UPLOAD_FAILED
+      - MAGNET_NO_URI
+      - MAGNET_PROCESSING
+      - MAGNET_TOO_MANY_ACTIVE
+      - MAGNET_MUST_BE_PREMIUM
+      - MAGNET_NO_SERVER
+      - MAGNET_TOO_LARGE
+      - PIN_ALREADY_AUTHED
+      - PIN_EXPIRED
+      - PIN_INVALID
+      - USER_LINK_MISSING
+      - USER_LINK_INVALID
+      - NO_SERVER
+      - MISSING_NOTIF_ENDPOINT
+      type: string
+    inline_response_200_data_hosts:
+      example:
+        regexp: (uptobox\.com/[0-9a-zA-Z]+(/.*)?)|uptostream\.com/([0-9a-zA-Z]{12})
+        regexps:
+        - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+        - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+        name: uptobox
+        domains:
+        - uptobox.com
+        - uptobox.com
+        type: premium
+        status: true
+      properties:
+        name:
+          example: uptobox
+          type: string
+        type:
+          example: premium
+          type: string
+        domains:
+          items:
+            example: uptobox.com
+            type: string
+          type: array
+        regexp:
+          example: (uptobox\.com/[0-9a-zA-Z]+(/.*)?)|uptostream\.com/([0-9a-zA-Z]{12})
+          type: string
+        regexps:
+          items:
+            example: uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+            type: string
+          type: array
+        status:
+          type: boolean
+      type: object
+    inline_response_200_data_streams:
+      example:
+        regexp: https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)", "https?:\/\/(?:www\\.)?youtube\\.com\/feed\/history|:ythistory
+        regexps:
+        - https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+        - https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+        name: youtube
+        domains:
+        - youtube.be
+        - youtube.be
+        type: free
+        status: true
+      properties:
+        name:
+          example: youtube
+          type: string
+        type:
+          example: free
+          type: string
+        domains:
+          items:
+            example: youtube.be
+            type: string
+          type: array
+        regexp:
+          example: https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)", "https?:\/\/(?:www\\.)?youtube\\.com\/feed\/history|:ythistory
+          type: string
+        regexps:
+          items:
+            example: https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+            type: string
+          type: array
+        status:
+          type: boolean
+      type: object
+    inline_response_200_data_redirectors:
+      example:
+        regexp: (dl-protecte\.com/[0-9a-zA-Z]+)|(protect-lien\.com/[0-9a-zA-Z]+)|dl-protecte\.org/([0-9a-zA-Z]+)
+        regexps:
+        - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+        - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+        name: dlprotecte
+        domains:
+        - dl-protecte.com
+        - dl-protecte.com
+        type: premium
+        status: true
+      properties:
+        name:
+          example: dlprotecte
+          type: string
+        type:
+          example: premium
+          type: string
+        domains:
+          items:
+            example: dl-protecte.com
+            type: string
+          type: array
+        regexp:
+          example: (dl-protecte\.com/[0-9a-zA-Z]+)|(protect-lien\.com/[0-9a-zA-Z]+)|dl-protecte\.org/([0-9a-zA-Z]+)
+          type: string
+        regexps:
+          items:
+            example: uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+            type: string
+          type: array
+        status:
+          type: boolean
+      type: object
+    inline_response_200_data:
+      example:
+        redirectors:
+          key:
+            regexp: (dl-protecte\.com/[0-9a-zA-Z]+)|(protect-lien\.com/[0-9a-zA-Z]+)|dl-protecte\.org/([0-9a-zA-Z]+)
+            regexps:
+            - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+            - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+            name: dlprotecte
+            domains:
+            - dl-protecte.com
+            - dl-protecte.com
+            type: premium
+            status: true
+        hosts:
+          key:
+            regexp: (uptobox\.com/[0-9a-zA-Z]+(/.*)?)|uptostream\.com/([0-9a-zA-Z]{12})
+            regexps:
+            - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+            - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+            name: uptobox
+            domains:
+            - uptobox.com
+            - uptobox.com
+            type: premium
+            status: true
+        streams:
+          key:
+            regexp: https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)", "https?:\/\/(?:www\\.)?youtube\\.com\/feed\/history|:ythistory
+            regexps:
+            - https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+            - https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+            name: youtube
+            domains:
+            - youtube.be
+            - youtube.be
+            type: free
+            status: true
+      properties:
+        hosts:
+          additionalProperties:
+            $ref: '#/components/schemas/inline_response_200_data_hosts'
+          type: object
+        streams:
+          additionalProperties:
+            $ref: '#/components/schemas/inline_response_200_data_streams'
+          type: object
+        redirectors:
+          additionalProperties:
+            $ref: '#/components/schemas/inline_response_200_data_redirectors'
+          type: object
+      type: object
+    inline_response_200_error:
+      example:
+        code: AUTH_MISSING_APIKEY
+        message: The auth apikey was not sent
+      properties:
+        code:
+          example: AUTH_MISSING_APIKEY
+          type: string
+        message:
+          example: The auth apikey was not sent
+          type: string
+      type: object
+    inline_response_200:
+      example:
+        data:
+          redirectors:
+            key:
+              regexp: (dl-protecte\.com/[0-9a-zA-Z]+)|(protect-lien\.com/[0-9a-zA-Z]+)|dl-protecte\.org/([0-9a-zA-Z]+)
+              regexps:
+              - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+              - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+              name: dlprotecte
+              domains:
+              - dl-protecte.com
+              - dl-protecte.com
+              type: premium
+              status: true
+          hosts:
+            key:
+              regexp: (uptobox\.com/[0-9a-zA-Z]+(/.*)?)|uptostream\.com/([0-9a-zA-Z]{12})
+              regexps:
+              - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+              - uptostream\\.com/iframe/([0-9a-zA-Z]{12})
+              name: uptobox
+              domains:
+              - uptobox.com
+              - uptobox.com
+              type: premium
+              status: true
+          streams:
+            key:
+              regexp: https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)",
+                "https?:\/\/(?:www\\.)?youtube\\.com\/feed\/history|:ythistory
+              regexps:
+              - https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+              - https?:\/\/(?:www\\.)?youtube\\.com\/show\/(?P<id>[^?#]*)
+              name: youtube
+              domains:
+              - youtube.be
+              - youtube.be
+              type: free
+              status: true
+        error:
+          code: AUTH_MISSING_APIKEY
+          message: The auth apikey was not sent
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_error'
+      type: object
+    inline_response_200_1_data:
+      example:
+        redirectors:
+        - dl-protecte.com
+        - dl-protecte.com
+        hosts:
+        - uptobox.com
+        - uptobox.com
+        streams:
+        - youtube.com
+        - youtube.com
+      properties:
+        hosts:
+          items:
+            example: uptobox.com
+            type: string
+          type: array
+        streams:
+          items:
+            example: youtube.com
+            type: string
+          type: array
+        redirectors:
+          items:
+            example: dl-protecte.com
+            type: string
+          type: array
+      type: object
+    inline_response_200_1:
+      example:
+        data:
+          redirectors:
+          - dl-protecte.com
+          - dl-protecte.com
+          hosts:
+          - uptobox.com
+          - uptobox.com
+          streams:
+          - youtube.com
+          - youtube.com
+        error:
+          code: AUTH_MISSING_APIKEY
+          message: The auth apikey was not sent
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_1_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_error'
+      type: object
+    inline_response_200_2_data:
+      example:
+        hosts:
+          key: 4
+      properties:
+        hosts:
+          additionalProperties:
+            example: 4
+            format: int64
+            type: integer
+          type: object
+      type: object
+    inline_response_200_2:
+      example:
+        data:
+          hosts:
+            key: 4
+        error:
+          code: AUTH_MISSING_APIKEY
+          message: The auth apikey was not sent
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_2_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_error'
+      type: object
+    inline_response_200_3_data_user:
+      example:
+        isSubscribed: true
+        premiumUntil: 1545757200
+        fidelityPoints: 200
+        isPremium: true
+        preferedDomain: fr
+        isTrial: true
+        lang: fr
+        limitedHostersQuotas:
+          key: 3000
+        email: some.email@example.com
+        notifications:
+        - FREEDAYS_USED_QUOTA
+        - FREEDAYS_USED_QUOTA
+        username: MyUsername
+      properties:
+        username:
+          example: MyUsername
+          type: string
+        email:
+          example: some.email@example.com
+          type: string
+        isPremium:
+          type: boolean
+        isSubscribed:
+          type: boolean
+        isTrial:
+          type: boolean
+        premiumUntil:
+          example: 1545757200
+          format: int64
+          type: integer
+        lang:
+          example: fr
+          type: string
+        preferedDomain:
+          example: fr
+          type: string
+        fidelityPoints:
+          example: 200
+          format: int64
+          type: integer
+        limitedHostersQuotas:
+          additionalProperties:
+            example: 3000
+            format: int64
+            type: integer
+          type: object
+        notifications:
+          items:
+            example: FREEDAYS_USED_QUOTA
+            type: string
+          type: array
+      type: object
+    inline_response_200_3_data:
+      example:
+        user:
+          isSubscribed: true
+          premiumUntil: 1545757200
+          fidelityPoints: 200
+          isPremium: true
+          preferedDomain: fr
+          isTrial: true
+          lang: fr
+          limitedHostersQuotas:
+            key: 3000
+          email: some.email@example.com
+          notifications:
+          - FREEDAYS_USED_QUOTA
+          - FREEDAYS_USED_QUOTA
+          username: MyUsername
+      properties:
+        user:
+          $ref: '#/components/schemas/inline_response_200_3_data_user'
+      type: object
+    inline_response_200_3:
+      example:
+        data:
+          user:
+            isSubscribed: true
+            premiumUntil: 1545757200
+            fidelityPoints: 200
+            isPremium: true
+            preferedDomain: fr
+            isTrial: true
+            lang: fr
+            limitedHostersQuotas:
+              key: 3000
+            email: some.email@example.com
+            notifications:
+            - FREEDAYS_USED_QUOTA
+            - FREEDAYS_USED_QUOTA
+            username: MyUsername
+        error:
+          code: AUTH_MISSING_APIKEY
+          message: The auth apikey was not sent
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_3_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_error'
+      type: object
+    inline_response_200_4_data:
+      example:
+        message: Notification was cleared
+      properties:
+        message:
+          example: Notification was cleared
+          type: string
+      type: object
+    inline_response_200_4:
+      example:
+        data:
+          message: Notification was cleared
+        error:
+          code: AUTH_MISSING_APIKEY
+          message: The auth apikey was not sent
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_4_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_error'
+      type: object
+    inline_response_200_5_data_infos:
+      example:
+        filename: ubuntu-18.04.1-server-amd64.iso
+        size: 699400192
+        link: https://uptobox.com/l1ub83vil5c3
+        host: uptobox
+        hostDomain: uptobox.com
+      properties:
+        link:
+          description: Requested link
+          example: https://uptobox.com/l1ub83vil5c3
+          type: string
+        filename:
+          description: Link's file filename.
+          example: ubuntu-18.04.1-server-amd64.iso
+          type: string
+        size:
+          description: Link's file size in bytes.
+          example: 699400192
+          format: int64
+          type: integer
+        host:
+          description: Link host.
+          example: uptobox
+          type: string
+        hostDomain:
+          description: Host main domain
+          example: uptobox.com
+          type: string
+      type: object
+    inline_response_200_5_data:
+      example:
+        infos:
+        - filename: ubuntu-18.04.1-server-amd64.iso
+          size: 699400192
+          link: https://uptobox.com/l1ub83vil5c3
+          host: uptobox
+          hostDomain: uptobox.com
+        - filename: ubuntu-18.04.1-server-amd64.iso
+          size: 699400192
+          link: https://uptobox.com/l1ub83vil5c3
+          host: uptobox
+          hostDomain: uptobox.com
+      properties:
+        infos:
+          description: Array of info objects
+          items:
+            $ref: '#/components/schemas/inline_response_200_5_data_infos'
+          type: array
+      type: object
+    inline_response_200_5_error:
+      example:
+        code: LINK_IS_MISSING
+        message: No link was sent
+      properties:
+        code:
+          example: LINK_IS_MISSING
+          type: string
+        message:
+          example: No link was sent
+          type: string
+      type: object
+    inline_response_200_5:
+      example:
+        data:
+          infos:
+          - filename: ubuntu-18.04.1-server-amd64.iso
+            size: 699400192
+            link: https://uptobox.com/l1ub83vil5c3
+            host: uptobox
+            hostDomain: uptobox.com
+          - filename: ubuntu-18.04.1-server-amd64.iso
+            size: 699400192
+            link: https://uptobox.com/l1ub83vil5c3
+            host: uptobox
+            hostDomain: uptobox.com
+        error:
+          code: LINK_IS_MISSING
+          message: No link was sent
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_5_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_5_error'
+      type: object
+    inline_response_200_6_data:
+      example:
+        links:
+        - http://uptobox.com/l1ub83vil5c3
+        - http://uptobox.com/l1ub83vil5c3
+      properties:
+        links:
+          description: Link(s) extracted.
+          items:
+            example: http://uptobox.com/l1ub83vil5c3
+            type: string
+          type: array
+      type: object
+    inline_response_200_6_error:
+      example:
+        code: REDIRECTOR_NOT_SUPPORTED
+        message: Redirector not supported Redirector not supported
+      properties:
+        code:
+          example: REDIRECTOR_NOT_SUPPORTED
+          type: string
+        message:
+          example: Redirector not supported Redirector not supported
+          type: string
+      type: object
+    inline_response_200_6:
+      example:
+        data:
+          links:
+          - http://uptobox.com/l1ub83vil5c3
+          - http://uptobox.com/l1ub83vil5c3
+        error:
+          code: REDIRECTOR_NOT_SUPPORTED
+          message: Redirector not supported Redirector not supported
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_6_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_6_error'
+      type: object
+    inline_response_200_7_data_streams:
+      example:
+        ext: m3u8
+        abr: 128
+        proto: https
+        name: m3u8
+        link: https://www43.uptostream.com/stream/54gwwydcf4/_m_main_0.m3u8
+        id: hls
+        filesize: 3433538
+        tb: 130.621
+        quality: "360"
+      properties:
+        id:
+          example: hls
+          type: string
+        ext:
+          example: m3u8
+          type: string
+        quality:
+          example: "360"
+          type: string
+        filesize:
+          example: 3433538
+          format: int64
+          type: integer
+        proto:
+          example: https
+          type: string
+        name:
+          example: m3u8
+          type: string
+        link:
+          example: https://www43.uptostream.com/stream/54gwwydcf4/_m_main_0.m3u8
+          type: string
+        tb:
+          example: 130.621
+          type: number
+        abr:
+          example: 128
+          format: int64
+          type: integer
+      type: object
+    inline_response_200_7_data:
+      example:
+        filename: '[zza].Micmacs.à.tire-larigot.2009.1080p.x265.AC3.mkv'
+        streams:
+        - ext: m3u8
+          abr: 128
+          proto: https
+          name: m3u8
+          link: https://www43.uptostream.com/stream/54gwwydcf4/_m_main_0.m3u8
+          id: hls
+          filesize: 3433538
+          tb: 130.621
+          quality: "360"
+        - ext: m3u8
+          abr: 128
+          proto: https
+          name: m3u8
+          link: https://www43.uptostream.com/stream/54gwwydcf4/_m_main_0.m3u8
+          id: hls
+          filesize: 3433538
+          tb: 130.621
+          quality: "360"
+        host: uptobox
+        hostDomain: uptobox.com
+        link: https://d01vz3.debrid.it/dl/2bifjkf54f6/%5Bzza%5D.Micmacs.%C3%A0.tire-larigot.2009.1080p.x265.AC3.mkv
+        paws: true
+        filesize: 1951233010
+        id: 2bifjkf54f6
+      properties:
+        filename:
+          example: '[zza].Micmacs.à.tire-larigot.2009.1080p.x265.AC3.mkv'
+          type: string
+        filesize:
+          example: 1951233010
+          format: int64
+          type: integer
+        host:
+          example: uptobox
+          type: string
+        hostDomain:
+          example: uptobox.com
+          type: string
+        id:
+          example: 2bifjkf54f6
+          type: string
+        link:
+          example: https://d01vz3.debrid.it/dl/2bifjkf54f6/%5Bzza%5D.Micmacs.%C3%A0.tire-larigot.2009.1080p.x265.AC3.mkv
+          type: string
+        paws:
+          type: boolean
+        streams:
+          items:
+            $ref: '#/components/schemas/inline_response_200_7_data_streams'
+          type: array
+      type: object
+    inline_response_200_7_error:
+      example:
+        code: LINK_HOST_NOT_SUPPORTED
+        message: This link is not supported.
+      properties:
+        code:
+          example: LINK_HOST_NOT_SUPPORTED
+          type: string
+        message:
+          example: This link is not supported.
+          type: string
+      type: object
+    inline_response_200_7:
+      example:
+        data:
+          filename: '[zza].Micmacs.à.tire-larigot.2009.1080p.x265.AC3.mkv'
+          streams:
+          - ext: m3u8
+            abr: 128
+            proto: https
+            name: m3u8
+            link: https://www43.uptostream.com/stream/54gwwydcf4/_m_main_0.m3u8
+            id: hls
+            filesize: 3433538
+            tb: 130.621
+            quality: "360"
+          - ext: m3u8
+            abr: 128
+            proto: https
+            name: m3u8
+            link: https://www43.uptostream.com/stream/54gwwydcf4/_m_main_0.m3u8
+            id: hls
+            filesize: 3433538
+            tb: 130.621
+            quality: "360"
+          host: uptobox
+          hostDomain: uptobox.com
+          link: https://d01vz3.debrid.it/dl/2bifjkf54f6/%5Bzza%5D.Micmacs.%C3%A0.tire-larigot.2009.1080p.x265.AC3.mkv
+          paws: true
+          filesize: 1951233010
+          id: 2bifjkf54f6
+        error:
+          code: LINK_HOST_NOT_SUPPORTED
+          message: This link is not supported.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_7_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_7_error'
+      type: object
+    inline_response_200_8_data_streams:
+      example:
+        ext: mp3
+        abr: 128
+        proto: https
+        name: name
+        link: link
+        id: "140"
+        filesize: 3433538
+        tb: 130.621
+        quality: mp3
+      properties:
+        id:
+          example: "140"
+          type: string
+        ext:
+          example: mp3
+          type: string
+        quality:
+          example: mp3
+          type: string
+        filesize:
+          example: 3433538
+          format: int64
+          type: integer
+        proto:
+          example: https
+          type: string
+        name:
+          type: string
+        link:
+          type: string
+        tb:
+          example: 130.621
+          type: number
+        abr:
+          example: 128
+          format: int64
+          type: integer
+      type: object
+    inline_response_200_8_data:
+      example:
+        filename: '[zza].Micmacs.à.tire-larigot.2009.1080p.x265.AC3.mkv'
+        streams:
+        - ext: mp3
+          abr: 128
+          proto: https
+          name: name
+          link: link
+          id: "140"
+          filesize: 3433538
+          tb: 130.621
+          quality: mp3
+        - ext: mp3
+          abr: 128
+          proto: https
+          name: name
+          link: link
+          id: "140"
+          filesize: 3433538
+          tb: 130.621
+          quality: mp3
+        host: uptobox
+        hostDomain: uptobox.com
+        link: https://d01vz3.debrid.it/dl/2bifjkf54f6/%5Bzza%5D.Micmacs.%C3%A0.tire-larigot.2009.1080p.x265.AC3.mkv
+        paws: true
+        filesize: 1951233010
+        id: 2bifjkf54f6
+      properties:
+        filename:
+          example: '[zza].Micmacs.à.tire-larigot.2009.1080p.x265.AC3.mkv'
+          type: string
+        filesize:
+          example: 1951233010
+          format: int64
+          type: integer
+        host:
+          example: uptobox
+          type: string
+        hostDomain:
+          example: uptobox.com
+          type: string
+        id:
+          example: 2bifjkf54f6
+          type: string
+        link:
+          example: https://d01vz3.debrid.it/dl/2bifjkf54f6/%5Bzza%5D.Micmacs.%C3%A0.tire-larigot.2009.1080p.x265.AC3.mkv
+          type: string
+        paws:
+          type: boolean
+        streams:
+          items:
+            $ref: '#/components/schemas/inline_response_200_8_data_streams'
+          type: array
+      type: object
+    inline_response_200_8:
+      example:
+        data:
+          filename: '[zza].Micmacs.à.tire-larigot.2009.1080p.x265.AC3.mkv'
+          streams:
+          - ext: mp3
+            abr: 128
+            proto: https
+            name: name
+            link: link
+            id: "140"
+            filesize: 3433538
+            tb: 130.621
+            quality: mp3
+          - ext: mp3
+            abr: 128
+            proto: https
+            name: name
+            link: link
+            id: "140"
+            filesize: 3433538
+            tb: 130.621
+            quality: mp3
+          host: uptobox
+          hostDomain: uptobox.com
+          link: https://d01vz3.debrid.it/dl/2bifjkf54f6/%5Bzza%5D.Micmacs.%C3%A0.tire-larigot.2009.1080p.x265.AC3.mkv
+          paws: true
+          filesize: 1951233010
+          id: 2bifjkf54f6
+        error:
+          code: LINK_HOST_NOT_SUPPORTED
+          message: This link is not supported.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_8_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_7_error'
+      type: object
+    inline_response_200_9_data:
+      example:
+        time_left: 0
+        link: http://ombfyx.alld.io/dl/abcdefgh12/ubuntu-16.04.1-server-amd64.iso
+        status: 2
+      properties:
+        status:
+          example: 2
+          format: int64
+          type: integer
+        time_left:
+          example: 0
+          format: int64
+          type: integer
+        link:
+          example: http://ombfyx.alld.io/dl/abcdefgh12/ubuntu-16.04.1-server-amd64.iso
+          type: string
+      type: object
+    inline_response_200_9_error:
+      example:
+        code: DELAYED_INVALID_ID
+        message: This delayed link id is invalid.
+      properties:
+        code:
+          example: DELAYED_INVALID_ID
+          type: string
+        message:
+          example: This delayed link id is invalid.
+          type: string
+      type: object
+    inline_response_200_9:
+      example:
+        data:
+          time_left: 0
+          link: http://ombfyx.alld.io/dl/abcdefgh12/ubuntu-16.04.1-server-amd64.iso
+          status: 2
+        error:
+          code: DELAYED_INVALID_ID
+          message: This delayed link id is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_9_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_9_error'
+      type: object
+    inline_response_200_10_data_error:
+      example:
+        code: MAGNET_INVALID_URI
+        message: Magnet is not valid
+      properties:
+        code:
+          example: MAGNET_INVALID_URI
+          type: string
+        message:
+          example: Magnet is not valid
+          type: string
+      type: object
+    inline_response_200_10_data_magnets:
+      example:
+        size: 875773970
+        ready: true
+        name: ubuntu-18.04.2-live-server-amd64.iso
+        id: 123456
+        error:
+          code: MAGNET_INVALID_URI
+          message: Magnet is not valid
+        magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+        hash: 842783e3005495d5d1637f5364b59343c7844707
+      properties:
+        magnet:
+          example: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          type: string
+        hash:
+          example: 842783e3005495d5d1637f5364b59343c7844707
+          type: string
+        name:
+          example: ubuntu-18.04.2-live-server-amd64.iso
+          type: string
+        size:
+          example: 875773970
+          format: int64
+          type: integer
+        ready:
+          type: boolean
+        id:
+          example: 123456
+          format: int64
+          type: integer
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_data_error'
+      type: object
+    inline_response_200_10_data:
+      example:
+        magnets:
+        - size: 875773970
+          ready: true
+          name: ubuntu-18.04.2-live-server-amd64.iso
+          id: 123456
+          error:
+            code: MAGNET_INVALID_URI
+            message: Magnet is not valid
+          magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          hash: 842783e3005495d5d1637f5364b59343c7844707
+        - size: 875773970
+          ready: true
+          name: ubuntu-18.04.2-live-server-amd64.iso
+          id: 123456
+          error:
+            code: MAGNET_INVALID_URI
+            message: Magnet is not valid
+          magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          hash: 842783e3005495d5d1637f5364b59343c7844707
+      properties:
+        magnets:
+          items:
+            $ref: '#/components/schemas/inline_response_200_10_data_magnets'
+          type: array
+      type: object
+    inline_response_200_10_error:
+      example:
+        code: AUTH_BAD_APIKEY
+        message: The auth apikey is invalid.
+      properties:
+        code:
+          example: AUTH_BAD_APIKEY
+          type: string
+        message:
+          example: The auth apikey is invalid.
+          type: string
+      type: object
+    inline_response_200_10:
+      example:
+        data:
+          magnets:
+          - size: 875773970
+            ready: true
+            name: ubuntu-18.04.2-live-server-amd64.iso
+            id: 123456
+            error:
+              code: MAGNET_INVALID_URI
+              message: Magnet is not valid
+            magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+            hash: 842783e3005495d5d1637f5364b59343c7844707
+          - size: 875773970
+            ready: true
+            name: ubuntu-18.04.2-live-server-amd64.iso
+            id: 123456
+            error:
+              code: MAGNET_INVALID_URI
+              message: Magnet is not valid
+            magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+            hash: 842783e3005495d5d1637f5364b59343c7844707
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_10_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_object:
+      properties:
+        '[]file':
+          format: binary
+          type: string
+      type: object
+    inline_response_200_11_data_error:
+      example:
+        code: MAGNET_INVALID_FILE
+        message: File is not a valid torrent.
+      properties:
+        code:
+          example: MAGNET_INVALID_FILE
+          type: string
+        message:
+          example: File is not a valid torrent.
+          type: string
+      type: object
+    inline_response_200_11_data_files:
+      example:
+        file: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+        size: 875773970
+        ready: true
+        name: ubuntu-18.04.2-live-server-amd64.iso
+        id: 123456
+        error:
+          code: MAGNET_INVALID_FILE
+          message: File is not a valid torrent.
+        hash: 842783e3005495d5d1637f5364b59343c7844707
+      properties:
+        file:
+          example: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          type: string
+        hash:
+          example: 842783e3005495d5d1637f5364b59343c7844707
+          type: string
+        name:
+          example: ubuntu-18.04.2-live-server-amd64.iso
+          type: string
+        size:
+          example: 875773970
+          format: int64
+          type: integer
+        ready:
+          type: boolean
+        id:
+          example: 123456
+          format: int64
+          type: integer
+        error:
+          $ref: '#/components/schemas/inline_response_200_11_data_error'
+      type: object
+    inline_response_200_11_data:
+      example:
+        files:
+        - file: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          size: 875773970
+          ready: true
+          name: ubuntu-18.04.2-live-server-amd64.iso
+          id: 123456
+          error:
+            code: MAGNET_INVALID_FILE
+            message: File is not a valid torrent.
+          hash: 842783e3005495d5d1637f5364b59343c7844707
+        - file: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          size: 875773970
+          ready: true
+          name: ubuntu-18.04.2-live-server-amd64.iso
+          id: 123456
+          error:
+            code: MAGNET_INVALID_FILE
+            message: File is not a valid torrent.
+          hash: 842783e3005495d5d1637f5364b59343c7844707
+      properties:
+        files:
+          items:
+            $ref: '#/components/schemas/inline_response_200_11_data_files'
+          type: array
+      type: object
+    inline_response_200_11:
+      example:
+        data:
+          files:
+          - file: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+            size: 875773970
+            ready: true
+            name: ubuntu-18.04.2-live-server-amd64.iso
+            id: 123456
+            error:
+              code: MAGNET_INVALID_FILE
+              message: File is not a valid torrent.
+            hash: 842783e3005495d5d1637f5364b59343c7844707
+          - file: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+            size: 875773970
+            ready: true
+            name: ubuntu-18.04.2-live-server-amd64.iso
+            id: 123456
+            error:
+              code: MAGNET_INVALID_FILE
+              message: File is not a valid torrent.
+            hash: 842783e3005495d5d1637f5364b59343c7844707
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_11_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_response_200_12_data_links:
+      example:
+        filename: ubuntu-20.04.2-live-server-amd64.iso
+        size: 256458252
+        link: http://uptobox.com/aaaabbbbzzzz
+      properties:
+        link:
+          example: http://uptobox.com/aaaabbbbzzzz
+          type: string
+        filename:
+          example: ubuntu-20.04.2-live-server-amd64.iso
+          type: string
+        size:
+          example: 256458252
+          format: int64
+          type: integer
+      type: object
+    inline_response_200_12_data_magnets:
+      example:
+        downloadSpeed: 0
+        uploadSpeed: 0
+        downloaded: 256400192
+        seeders: 12
+        filename: ubuntu-20.04.2-live-server-amd64.iso
+        size: 256400192
+        uploadDate: 1657133868
+        uploaded: 0
+        completionDate: 1657133968
+        links:
+        - filename: ubuntu-20.04.2-live-server-amd64.iso
+          size: 256458252
+          link: http://uptobox.com/aaaabbbbzzzz
+        - filename: ubuntu-20.04.2-live-server-amd64.iso
+          size: 256458252
+          link: http://uptobox.com/aaaabbbbzzzz
+        id: 56789
+        status: Ready
+        statusCode: 4
+      properties:
+        id:
+          example: 56789
+          format: int64
+          type: integer
+        filename:
+          example: ubuntu-20.04.2-live-server-amd64.iso
+          type: string
+        size:
+          example: 256400192
+          format: int64
+          type: integer
+        status:
+          example: Ready
+          type: string
+        statusCode:
+          example: 4
+          format: int64
+          type: integer
+        downloaded:
+          example: 256400192
+          format: int64
+          type: integer
+        uploaded:
+          example: 0
+          format: int64
+          type: integer
+        seeders:
+          example: 12
+          format: int64
+          type: integer
+        downloadSpeed:
+          example: 0
+          format: int64
+          type: integer
+        uploadSpeed:
+          example: 0
+          format: int64
+          type: integer
+        uploadDate:
+          example: 1657133868
+          format: int64
+          type: integer
+        completionDate:
+          example: 1657133968
+          format: int64
+          type: integer
+        links:
+          items:
+            $ref: '#/components/schemas/inline_response_200_12_data_links'
+          type: array
+      type: object
+    inline_response_200_12_data:
+      example:
+        magnets:
+        - downloadSpeed: 0
+          uploadSpeed: 0
+          downloaded: 256400192
+          seeders: 12
+          filename: ubuntu-20.04.2-live-server-amd64.iso
+          size: 256400192
+          uploadDate: 1657133868
+          uploaded: 0
+          completionDate: 1657133968
+          links:
+          - filename: ubuntu-20.04.2-live-server-amd64.iso
+            size: 256458252
+            link: http://uptobox.com/aaaabbbbzzzz
+          - filename: ubuntu-20.04.2-live-server-amd64.iso
+            size: 256458252
+            link: http://uptobox.com/aaaabbbbzzzz
+          id: 56789
+          status: Ready
+          statusCode: 4
+        - downloadSpeed: 0
+          uploadSpeed: 0
+          downloaded: 256400192
+          seeders: 12
+          filename: ubuntu-20.04.2-live-server-amd64.iso
+          size: 256400192
+          uploadDate: 1657133868
+          uploaded: 0
+          completionDate: 1657133968
+          links:
+          - filename: ubuntu-20.04.2-live-server-amd64.iso
+            size: 256458252
+            link: http://uptobox.com/aaaabbbbzzzz
+          - filename: ubuntu-20.04.2-live-server-amd64.iso
+            size: 256458252
+            link: http://uptobox.com/aaaabbbbzzzz
+          id: 56789
+          status: Ready
+          statusCode: 4
+      properties:
+        magnets:
+          items:
+            $ref: '#/components/schemas/inline_response_200_12_data_magnets'
+          type: array
+      type: object
+    inline_response_200_12:
+      example:
+        data:
+          magnets:
+          - downloadSpeed: 0
+            uploadSpeed: 0
+            downloaded: 256400192
+            seeders: 12
+            filename: ubuntu-20.04.2-live-server-amd64.iso
+            size: 256400192
+            uploadDate: 1657133868
+            uploaded: 0
+            completionDate: 1657133968
+            links:
+            - filename: ubuntu-20.04.2-live-server-amd64.iso
+              size: 256458252
+              link: http://uptobox.com/aaaabbbbzzzz
+            - filename: ubuntu-20.04.2-live-server-amd64.iso
+              size: 256458252
+              link: http://uptobox.com/aaaabbbbzzzz
+            id: 56789
+            status: Ready
+            statusCode: 4
+          - downloadSpeed: 0
+            uploadSpeed: 0
+            downloaded: 256400192
+            seeders: 12
+            filename: ubuntu-20.04.2-live-server-amd64.iso
+            size: 256400192
+            uploadDate: 1657133868
+            uploaded: 0
+            completionDate: 1657133968
+            links:
+            - filename: ubuntu-20.04.2-live-server-amd64.iso
+              size: 256458252
+              link: http://uptobox.com/aaaabbbbzzzz
+            - filename: ubuntu-20.04.2-live-server-amd64.iso
+              size: 256458252
+              link: http://uptobox.com/aaaabbbbzzzz
+            id: 56789
+            status: Ready
+            statusCode: 4
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_12_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_response_200_13_data:
+      example:
+        message: Magnet was successfully deleted
+      properties:
+        message:
+          example: Magnet was successfully deleted
+          type: string
+      type: object
+    inline_response_200_13_error:
+      example:
+        code: MAGNET_INVALID_ID
+        message: Magnet ID is invalid.
+      properties:
+        code:
+          example: MAGNET_INVALID_ID
+          type: string
+        message:
+          example: Magnet ID is invalid.
+          type: string
+      type: object
+    inline_response_200_13:
+      example:
+        data:
+          message: Magnet was successfully deleted
+        error:
+          code: MAGNET_INVALID_ID
+          message: Magnet ID is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_13_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_13_error'
+      type: object
+    inline_response_200_14_data_error:
+      example:
+        code: MAGNET_PROCESSING
+        message: Magnet is processing or complete
+      properties:
+        code:
+          example: MAGNET_PROCESSING
+          type: string
+        message:
+          example: Magnet is processing or complete
+          type: string
+      type: object
+    inline_response_200_14_data_magnets:
+      example:
+        message: Magnet was successfully restarted
+        error:
+          code: MAGNET_PROCESSING
+          message: Magnet is processing or complete
+        magnet: "81951197"
+      properties:
+        magnet:
+          example: "81951197"
+          type: string
+        message:
+          example: Magnet was successfully restarted
+          type: string
+        error:
+          $ref: '#/components/schemas/inline_response_200_14_data_error'
+      type: object
+    inline_response_200_14_data:
+      example:
+        magnets:
+        - message: Magnet was successfully restarted
+          error:
+            code: MAGNET_PROCESSING
+            message: Magnet is processing or complete
+          magnet: "81951197"
+        - message: Magnet was successfully restarted
+          error:
+            code: MAGNET_PROCESSING
+            message: Magnet is processing or complete
+          magnet: "81951197"
+      properties:
+        magnets:
+          items:
+            $ref: '#/components/schemas/inline_response_200_14_data_magnets'
+          type: array
+      type: object
+    inline_response_200_14:
+      example:
+        data:
+          magnets:
+          - message: Magnet was successfully restarted
+            error:
+              code: MAGNET_PROCESSING
+              message: Magnet is processing or complete
+            magnet: "81951197"
+          - message: Magnet was successfully restarted
+            error:
+              code: MAGNET_PROCESSING
+              message: Magnet is processing or complete
+            magnet: "81951197"
+        error:
+          code: MAGNET_INVALID_ID
+          message: Magnet ID is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_14_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_13_error'
+      type: object
+    inline_response_200_15_data_magnets:
+      example:
+        error:
+          code: MAGNET_INVALID_URI
+          message: Magnet is not valid
+        magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+        hash: 842783e3005495d5d1637f5364b59343c7844707
+        instant: true
+      properties:
+        magnet:
+          example: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          type: string
+        hash:
+          example: 842783e3005495d5d1637f5364b59343c7844707
+          type: string
+        instant:
+          type: boolean
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_data_error'
+      type: object
+    inline_response_200_15_data:
+      example:
+        magnets:
+        - error:
+            code: MAGNET_INVALID_URI
+            message: Magnet is not valid
+          magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          hash: 842783e3005495d5d1637f5364b59343c7844707
+          instant: true
+        - error:
+            code: MAGNET_INVALID_URI
+            message: Magnet is not valid
+          magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+          hash: 842783e3005495d5d1637f5364b59343c7844707
+          instant: true
+      properties:
+        magnets:
+          items:
+            $ref: '#/components/schemas/inline_response_200_15_data_magnets'
+          type: array
+      type: object
+    inline_response_200_15:
+      example:
+        data:
+          magnets:
+          - error:
+              code: MAGNET_INVALID_URI
+              message: Magnet is not valid
+            magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+            hash: 842783e3005495d5d1637f5364b59343c7844707
+            instant: true
+          - error:
+              code: MAGNET_INVALID_URI
+              message: Magnet is not valid
+            magnet: magnet:?xt=urn:btih:842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso
+            hash: 842783e3005495d5d1637f5364b59343c7844707
+            instant: true
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_15_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_response_200_16_data_links:
+      example:
+        date: 1569420668
+        filename: ubuntu-16.04.6-desktop-amd64.iso
+        size: 751267520
+        link: https://uptobox.com/fx8sx9hcn18s
+        host: uptobox
+      properties:
+        link:
+          example: https://uptobox.com/fx8sx9hcn18s
+          type: string
+        filename:
+          example: ubuntu-16.04.6-desktop-amd64.iso
+          type: string
+        size:
+          example: 751267520
+          format: int64
+          type: integer
+        date:
+          example: 1569420668
+          format: int64
+          type: integer
+        host:
+          example: uptobox
+          type: string
+      type: object
+    inline_response_200_16_data:
+      example:
+        links:
+        - date: 1569420668
+          filename: ubuntu-16.04.6-desktop-amd64.iso
+          size: 751267520
+          link: https://uptobox.com/fx8sx9hcn18s
+          host: uptobox
+        - date: 1569420668
+          filename: ubuntu-16.04.6-desktop-amd64.iso
+          size: 751267520
+          link: https://uptobox.com/fx8sx9hcn18s
+          host: uptobox
+      properties:
+        links:
+          items:
+            $ref: '#/components/schemas/inline_response_200_16_data_links'
+          type: array
+      type: object
+    inline_response_200_16:
+      example:
+        data:
+          links:
+          - date: 1569420668
+            filename: ubuntu-16.04.6-desktop-amd64.iso
+            size: 751267520
+            link: https://uptobox.com/fx8sx9hcn18s
+            host: uptobox
+          - date: 1569420668
+            filename: ubuntu-16.04.6-desktop-amd64.iso
+            size: 751267520
+            link: https://uptobox.com/fx8sx9hcn18s
+            host: uptobox
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_16_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_response_200_17_data:
+      example:
+        message: Link was successfully saved
+      properties:
+        message:
+          example: Link was successfully saved
+          type: string
+      type: object
+    inline_response_200_17:
+      example:
+        data:
+          message: Link was successfully saved
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_17_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_response_200_18_data:
+      example:
+        message: Link was successfully deleted
+      properties:
+        message:
+          example: Link was successfully deleted
+          type: string
+      type: object
+    inline_response_200_18:
+      example:
+        data:
+          message: Link was successfully deleted
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_18_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+    inline_response_200_19_data:
+      example:
+        message: Links were successfully deleted
+      properties:
+        message:
+          example: Links were successfully deleted
+          type: string
+      type: object
+    inline_response_200_19:
+      example:
+        data:
+          message: Links were successfully deleted
+        error:
+          code: AUTH_BAD_APIKEY
+          message: The auth apikey is invalid.
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
+        data:
+          $ref: '#/components/schemas/inline_response_200_19_data'
+        error:
+          $ref: '#/components/schemas/inline_response_200_10_error'
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
