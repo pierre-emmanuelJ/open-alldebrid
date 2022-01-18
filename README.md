@@ -2,7 +2,7 @@
 
 Alldebrid OpenAPI Golang wrapper
 
-The Golang wrapper is generated from an [OpenAPI3 spec](./alldebrid.yaml) based on the official Alldebrid [Documentation](https://docs.alldebrid.com/#general-informations)
+The Golang wrapper is generated from an [OpenAPI3 spec](./alldebrid.yaml) based on the official Alldebrid.com [Documentation](https://docs.alldebrid.com/#general-informations)
 
 Open Alldebrid Swagger-ui [Visit here](https://pierre-emmanuelj.github.io/open-alldebrid/)
 
