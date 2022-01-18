@@ -29,12 +29,6 @@ Add the following in import:
 import "github.com/pierre-emmanuelJ/open-alldebrid/client"
 ```
 
-To use a proxy, set the environment variable `HTTP_PROXY`:
-
-```golang
-os.Setenv("HTTP_PROXY", "http://proxy_name:proxy_port")
-```
-
 ## Example
 
 ```Golang
