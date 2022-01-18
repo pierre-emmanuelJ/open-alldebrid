@@ -1,6 +1,6 @@
 # Open Alldebrid
 
-Alldebrid OpenAPI Golang wrapper.
+Alldebrid OpenAPI Golang wrapper
 
 The Golang wrapper is generated from an [OpenAPI3 spec](./alldebrid.yaml) based on the official Alldebrid [Documentation](https://docs.alldebrid.com/#general-informations)
 
@@ -23,7 +23,7 @@ Install the following dependencies:
 go get "github.com/pierre-emmanuelJ/open-alldebrid"
 ```
 
-Add the following in import:
+Add the following import:
 
 ```golang
 import "github.com/pierre-emmanuelJ/open-alldebrid/client"
@@ -97,6 +97,8 @@ Find all the API Documentation [here](./docs/DefaultApi.md)
 
 Swagger UI [here](https://pierre-emmanuelj.github.io/open-alldebrid/)
 
+You can execute HTTP request from the UI with your [Alldebrid ApiKey](https://alldebrid.com/apikeys/)
+
 ## Documentation For Authorization
 
 ### bearerAuth
@@ -113,3 +115,7 @@ api_client := client.NewAPIClient(configuration)
 
 resp, r, err := api_client.DefaultApi.UserGet(auth).Agent(agent).Execute()
 ```
+
+## Powered by
+
+* [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
