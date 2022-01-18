@@ -29,7 +29,7 @@ Add the following in import:
 import "github.com/pierre-emmanuelJ/open-alldebrid/client"
 ```
 
-## Example
+## Examples
 
 ```Golang
 package main
