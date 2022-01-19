@@ -2,10 +2,7 @@ module github.com/pierre-emmanuelJ/open-alldebrid
 
 go 1.17
 
-require (
-	github.com/davecgh/go-spew v1.1.0
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-)
+require golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 
 require (
 	github.com/golang/protobuf v1.4.2 // indirect
