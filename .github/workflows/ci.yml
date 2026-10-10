@@ -49,13 +49,18 @@ jobs:
         working-directory: sdks/go
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # oapi-codegen needs a newer Go than the SDK's minimum: generate with
+      # 1.26, then lint and test with the minimum from go.mod.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: sdks/go/go.mod
+          go-version: "1.26.x"
       - name: Generated code is up to date
         run: |
           go generate ./...
           git diff --exit-code -- .
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: sdks/go/go.mod
       - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
           version: v2.14.0

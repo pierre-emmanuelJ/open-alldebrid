@@ -2,7 +2,7 @@
 
 A Swift client for the [AllDebrid](https://alldebrid.com) API, built on the
 [open-alldebrid OpenAPI spec](../../openapi.yaml): async/await on URLSession,
-no dependencies. iOS 15, macOS 12, tvOS 15, watchOS 8 and Linux; Swift 6
+no dependencies. iOS 16, macOS 13, tvOS 16, watchOS 9 and Linux; Swift 6
 strict concurrency.
 
 ```swift
