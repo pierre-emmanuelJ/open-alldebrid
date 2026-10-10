@@ -1,0 +1,5 @@
+extends:
+  - recommended
+rules:
+  # ErrorCode is a catalog for SDKs and readers; Error.code stays a free string.
+  no-unused-components: off
