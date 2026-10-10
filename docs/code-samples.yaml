@@ -9,6 +9,7 @@
 #   Kotlin:     val client = AllDebrid(apiKey)
 #   PHP:        $client = new AllDebrid($apiKey);
 #   Rust:       let client = AllDebrid::new(api_key);
+#   C#:         var client = new AllDebrid(apiKey);
 
 ping:
   go: |
@@ -23,6 +24,8 @@ ping:
     $client->ping();
   rust: |
     client.ping().await?;
+  csharp: |
+    await client.PingAsync();
 
 getPin:
   go: |
@@ -49,6 +52,10 @@ getPin:
     let pin = client.get_pin().await?;
     println!("Open {}", pin.user_url);
     let api_key = client.wait_for_pin(&pin, Duration::from_secs(5)).await?;
+  csharp: |
+    var pin = await client.GetPinAsync();
+    Console.WriteLine($"Open {pin.UserUrl}");
+    var apiKey = await client.WaitForPinAsync(pin);
 
 checkPin:
   go: |
@@ -76,6 +83,9 @@ checkPin:
     if state.activated {
         println!("{:?}", state.apikey);
     }
+  csharp: |
+    var state = await client.CheckPinAsync(pin.Pin, pin.Check);
+    if (state.Activated) Console.WriteLine(state.Apikey);
 
 getHosts:
   go: |
@@ -102,6 +112,10 @@ getHosts:
     for (name, host) in &hosts.hosts {
         println!("{name} {:?}", host.domains);
     }
+  csharp: |
+    var hosts = await client.HostsAsync();
+    foreach (var (name, host) in hosts.Hosts)
+        Console.WriteLine($"{name} {string.Join(", ", host.Domains)}");
 
 getHostDomains:
   go: |
@@ -116,6 +130,8 @@ getHostDomains:
     $domains = $client->hostDomains();
   rust: |
     let domains = client.host_domains().await?;
+  csharp: |
+    var domains = await client.HostDomainsAsync();
 
 getHostPriority:
   go: |
@@ -130,6 +146,8 @@ getHostPriority:
     $ranks = $client->hostPriority(); // host => rank
   rust: |
     let ranks = client.host_priority().await?; // host -> rank
+  csharp: |
+    var ranks = await client.HostPriorityAsync(); // host -> rank
 
 getUser:
   go: |
@@ -150,6 +168,9 @@ getUser:
   rust: |
     let user = client.user().await?;
     println!("{} {}", user.username, user.is_premium);
+  csharp: |
+    var user = await client.UserAsync();
+    Console.WriteLine($"{user.Username} {user.IsPremium}");
 
 getUserHosts:
   go: |
@@ -170,6 +191,9 @@ getUserHosts:
   rust: |
     let hosts = client.user_hosts(false).await?;
     println!("{:?}", hosts.get("rapidgator").and_then(|h| h.quota));
+  csharp: |
+    var hosts = await client.UserHostsAsync();
+    Console.WriteLine(hosts["rapidgator"].Quota);
 
 getVerificationStatus:
   go: |
@@ -207,6 +231,12 @@ getVerificationStatus:
         let v = client.verification_status(&token).await?;
         println!("{}", v.verif); // waiting, allowed or denied
     }
+  csharp: |
+    catch (AllDebridException e) when (e.Code == ErrorCodes.AuthBlocked)
+    {
+        var v = await client.VerificationStatusAsync(e.Token!);
+        Console.WriteLine(v.Verif); // waiting, allowed or denied
+    }
 
 resendVerification:
   go: |
@@ -221,6 +251,8 @@ resendVerification:
     $client->resendVerification($token);
   rust: |
     client.resend_verification(&token).await?;
+  csharp: |
+    await client.ResendVerificationAsync(token);
 
 clearNotification:
   go: |
@@ -235,6 +267,8 @@ clearNotification:
     $client->clearNotification($user->notifications[0]);
   rust: |
     client.clear_notification(&user.notifications[0]).await?;
+  csharp: |
+    await client.ClearNotificationAsync(user.Notifications[0]);
 
 getLinkInfos:
   go: |
@@ -278,6 +312,13 @@ getLinkInfos:
         }
         println!("{:?} {:?}", info.filename, info.size);
     }
+  csharp: |
+    var infos = await client.LinkInfosAsync(new[] { "https://1fichier.com/?abcdefghij" });
+    foreach (var info in infos)
+    {
+        if (info.Error is not null) continue; // this link is down or unsupported
+        Console.WriteLine($"{info.Filename} {info.Size}");
+    }
 
 extractRedirector:
   go: |
@@ -292,6 +333,8 @@ extractRedirector:
     $links = $client->extractRedirector('https://protected.example/abc');
   rust: |
     let links = client.extract_redirector("https://protected.example/abc").await?;
+  csharp: |
+    var links = await client.ExtractRedirectorAsync("https://protected.example/abc");
 
 unlockLink:
   go: |
@@ -321,6 +364,9 @@ unlockLink:
         Some(id) => client.wait_delayed_link(id.as_str(), Duration::from_secs(5)).await?,
         None => u.link.unwrap_or_default(),
     };
+  csharp: |
+    var u = await client.UnlockAsync("https://1fichier.com/?abcdefghij");
+    var link = u.Delayed is { } id ? await client.WaitDelayedLinkAsync(id.Value) : u.Link;
 
 getStreamingLink:
   go: |
@@ -342,6 +388,9 @@ getStreamingLink:
     let u = client.unlock(video_url, None).await?;
     let streams = u.streaming.unwrap_or_default();
     let s = client.streaming_link(&u.id.unwrap(), &streams[0].id).await?;
+  csharp: |
+    var u = await client.UnlockAsync(videoUrl);
+    var s = await client.StreamingLinkAsync(u.Id!, u.Streaming![0].Id);
 
 getDelayedLink:
   go: |
@@ -356,6 +405,8 @@ getDelayedLink:
     $link = $client->waitDelayedLink($delayedId, 5.0);
   rust: |
     let link = client.wait_delayed_link(&delayed_id, Duration::from_secs(5)).await?;
+  csharp: |
+    var link = await client.WaitDelayedLinkAsync(delayedId, TimeSpan.FromSeconds(5));
 
 uploadMagnets:
   go: |
@@ -371,6 +422,8 @@ uploadMagnets:
     [$magnet] = $client->uploadMagnets(['magnet:?xt=urn:btih:...']);
   rust: |
     let magnets = client.upload_magnets(&["magnet:?xt=urn:btih:..."]).await?;
+  csharp: |
+    var magnets = await client.UploadMagnetsAsync(new[] { "magnet:?xt=urn:btih:..." });
 
 uploadTorrentFiles:
   go: |
@@ -392,6 +445,9 @@ uploadTorrentFiles:
   rust: |
     let file = TorrentFile { name: "file.torrent".into(), content: std::fs::read("file.torrent")? };
     let magnets = client.upload_torrent_files(vec![file]).await?;
+  csharp: |
+    var file = new TorrentFile("file.torrent", await File.ReadAllBytesAsync("file.torrent"));
+    var magnets = await client.UploadTorrentFilesAsync(new[] { file });
 
 getMagnetStatus:
   go: |
@@ -430,6 +486,12 @@ getMagnetStatus:
 
     let mut live = client.live_magnets(); // only transfers changes
     let magnets = live.poll().await?;
+  csharp: |
+    var all = await client.MagnetsAsync();
+    var one = await client.MagnetAsync(id); // with its files
+
+    var live = client.LiveMagnets(); // only transfers changes
+    var magnets = await live.PollAsync();
 
 getMagnetFiles:
   go: |
@@ -444,6 +506,8 @@ getMagnetFiles:
     $files = $client->magnetFiles([$id1, $id2]);
   rust: |
     let files = client.magnet_files(&[id1, id2]).await?;
+  csharp: |
+    var files = await client.MagnetFilesAsync(new[] { id1, id2 });
 
 deleteMagnet:
   go: |
@@ -458,6 +522,8 @@ deleteMagnet:
     $client->deleteMagnet($id);
   rust: |
     client.delete_magnet(id).await?;
+  csharp: |
+    await client.DeleteMagnetAsync(id);
 
 restartMagnets:
   go: |
@@ -478,6 +544,9 @@ restartMagnets:
   rust: |
     client.restart_magnet(id).await?;
     let results = client.restart_magnets(&[id1, id2]).await?;
+  csharp: |
+    await client.RestartMagnetAsync(id);
+    var results = await client.RestartMagnetsAsync(new[] { id1, id2 });
 
 getSavedLinks:
   go: |
@@ -492,6 +561,8 @@ getSavedLinks:
     $links = $client->savedLinks();
   rust: |
     let links = client.saved_links().await?;
+  csharp: |
+    var links = await client.SavedLinksAsync();
 
 saveLinks:
   go: |
@@ -506,6 +577,8 @@ saveLinks:
     $client->saveLinks(['https://1fichier.com/?abcdefghij']);
   rust: |
     client.save_links(&["https://1fichier.com/?abcdefghij"]).await?;
+  csharp: |
+    await client.SaveLinksAsync(new[] { "https://1fichier.com/?abcdefghij" });
 
 deleteSavedLinks:
   go: |
@@ -520,6 +593,8 @@ deleteSavedLinks:
     $client->deleteSavedLinks(['https://1fichier.com/?abcdefghij']);
   rust: |
     client.delete_saved_links(&["https://1fichier.com/?abcdefghij"]).await?;
+  csharp: |
+    await client.DeleteSavedLinksAsync(new[] { "https://1fichier.com/?abcdefghij" });
 
 getHistory:
   go: |
@@ -534,6 +609,8 @@ getHistory:
     $links = $client->history();
   rust: |
     let links = client.history().await?;
+  csharp: |
+    var links = await client.HistoryAsync();
 
 purgeHistory:
   go: |
@@ -548,6 +625,8 @@ purgeHistory:
     $client->purgeHistory();
   rust: |
     client.purge_history().await?;
+  csharp: |
+    await client.PurgeHistoryAsync();
 
 getVoucherBalance:
   go: |
@@ -562,6 +641,8 @@ getVoucherBalance:
     $balance = $client->voucherBalance();
   rust: |
     let balance = client.voucher_balance().await?;
+  csharp: |
+    var balance = await client.VoucherBalanceAsync();
 
 getVouchers:
   go: |
@@ -576,6 +657,8 @@ getVouchers:
     $v = $client->vouchers(30, 5);
   rust: |
     let v = client.vouchers(30, 5).await?;
+  csharp: |
+    var v = await client.VouchersAsync(30, 5);
 
 generateVouchers:
   go: |
@@ -590,3 +673,5 @@ generateVouchers:
     $v = $client->generateVouchers(30, 5);
   rust: |
     let v = client.generate_vouchers(30, 5).await?;
+  csharp: |
+    var v = await client.GenerateVouchersAsync(30, 5);

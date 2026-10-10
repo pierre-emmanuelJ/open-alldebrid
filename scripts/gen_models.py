@@ -12,7 +12,7 @@ classes, with the same rules everywhere:
 - required fields are non-optional, every other field is optional.
 
 Usage: python scripts/gen_models.py <language> <output file>
-Languages: kotlin, rust, php (the output is the src directory)
+Languages: kotlin, rust, csharp, php (the output is the src directory)
 """
 
 from __future__ import annotations
@@ -336,6 +336,91 @@ def json_str(s: str) -> str:
     return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
+# ----------------------------------------------------------------------- C#
+
+CSHARP_FLEX = {
+    "StringOrInteger": ("FlexString", None),
+    "StringOrStrings": ("IReadOnlyList<string>", "StringsConverter"),
+    "MagnetList": ("IReadOnlyList<Magnet>", "MagnetListConverter"),
+    "QuotaMap": ("IReadOnlyDictionary<string, long>", "QuotasConverter"),
+}
+
+
+def csharp_type(t: TypeRef) -> str:
+    prim = {"string": "string", "int": "int", "long": "long", "double": "double", "bool": "bool",
+            "any": "System.Text.Json.JsonElement"}
+    if t.kind in prim:
+        return prim[t.kind]
+    if t.kind == "list":
+        assert t.item
+        return f"IReadOnlyList<{csharp_type(t.item)}>"
+    if t.kind == "map":
+        assert t.item
+        return f"IReadOnlyDictionary<string, {csharp_type(t.item)}>"
+    if t.kind == "flex":
+        return CSHARP_FLEX[t.name][0]
+    return t.name
+
+
+def csharp_doc(text: str, indent: str) -> list[str]:
+    lines = [line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") for line in doc_lines(text)]
+    if not lines:
+        return []
+    return [f"{indent}/// <summary>", *[f"{indent}/// {line}".rstrip() for line in lines], f"{indent}/// </summary>"]
+
+
+def csharp_const(code: str) -> str:
+    return "NotFound" if code == "404" else pascal(code.lower())
+
+
+def emit_csharp(models: list[Model], codes: list[str], namespace: str) -> str:
+    aliases = {m.name: m.alias_of for m in models if m.alias_of is not None}
+    out = [
+        "// Generated from openapi.yaml by scripts/gen_models.py. DO NOT EDIT.",
+        "#nullable enable",
+        "",
+        "using System.Collections.Generic;",
+        "using System.Text.Json.Serialization;",
+        "",
+        f"namespace {namespace};",
+        "",
+    ]
+    for m in models:
+        if m.alias_of is not None:
+            continue
+        out += csharp_doc(m.description, "")
+        out += [f"public sealed record {m.name}", "{"]
+        for i, f in enumerate(m.fields):
+            t = aliases.get(f.type.name, f.type) if f.type.kind == "ref" else f.type
+            typ = csharp_type(t)
+            if i:
+                out.append("")
+            out += csharp_doc(f.description, "    ")
+            out.append(f'    [JsonPropertyName("{f.json_name}")]')
+            if t.kind == "flex" and CSHARP_FLEX[t.name][1]:
+                out.append(f"    [JsonConverter(typeof({CSHARP_FLEX[t.name][1]}))]")
+            if f.required:
+                out.append(f"    public required {typ} {pascal(f.json_name)} {{ get; init; }}")
+            else:
+                out.append(f"    public {typ}? {pascal(f.json_name)} {{ get; init; }}")
+        out += ["}", ""]
+    out += [
+        "/// <summary>Error codes the API is known to return. The API may return others.</summary>",
+        "public static class ErrorCodes",
+        "{",
+        *[f'    public const string {csharp_const(c)} = "{c}";' for c in codes],
+        "",
+        "    /// <summary>Every code of the spec.</summary>",
+        "    public static readonly IReadOnlyList<string> All = new[]",
+        "    {",
+        *[f"        {csharp_const(c)}," for c in codes],
+        "    };",
+        "}",
+        "",
+    ]
+    return "\n".join(out)
+
+
 # ------------------------------------------------------------------------- Rust
 
 RUST_KEYWORDS = {"type", "match", "ref", "self", "struct", "fn", "move", "mod", "use", "impl", "in", "loop", "where"}
@@ -440,6 +525,8 @@ def main() -> int:
         text = emit_kotlin(models, codes, "io.github.pierreemmanuelj.alldebrid")
     elif lang == "rust":
         text = emit_rust(models, codes)
+    elif lang == "csharp":
+        text = emit_csharp(models, codes, "OpenAllDebrid")
     elif lang == "php":
         # The output is the src directory; models go to src/Model/.
         for old in (output / "Model").glob("*.php"):

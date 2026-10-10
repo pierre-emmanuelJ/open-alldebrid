@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OpenAllDebrid/OpenAllDebrid.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OpenAllDebrid.Tests/OpenAllDebrid.Tests.csproj" />
+  </Folder>
+</Solution>
