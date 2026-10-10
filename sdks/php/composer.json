@@ -1,0 +1,32 @@
+{
+    "name": "pierre-emmanuelj/open-alldebrid",
+    "description": "Typed client for the AllDebrid API, built from the open-alldebrid OpenAPI spec",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["alldebrid", "debrid", "magnet", "torrent", "openapi", "sdk"],
+    "homepage": "https://github.com/pierre-emmanuelJ/open-alldebrid/tree/master/sdks/php",
+    "authors": [{"name": "Pierre-Emmanuel Jacquier"}],
+    "require": {
+        "php": ">=8.2",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5 || ^12.0 || ~13.3.0 <13.3.5",
+        "phpstan/phpstan": "2.2.15"
+    },
+    "autoload": {
+        "psr-4": {"OpenAllDebrid\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"OpenAllDebrid\\Tests\\": "tests/"}
+    },
+    "scripts": {
+        "generate": "python3 ../../scripts/gen_models.py php src",
+        "test": "phpunit",
+        "analyse": "phpstan analyse"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

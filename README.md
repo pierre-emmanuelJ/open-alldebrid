@@ -5,7 +5,7 @@
 
 An OpenAPI 3.1 description of the [AllDebrid](https://alldebrid.com) API (v4
 and v4.1), checked against the live API, with SDKs for Go, TypeScript,
-Python and Kotlin built on it.
+Python, Kotlin and PHP built on it.
 
 **[Interactive reference →](https://pierre-emmanuelj.github.io/open-alldebrid/)**
 Every endpoint, with real response examples, SDK samples, and a "Try it"
@@ -20,11 +20,12 @@ button that calls the API with the public demo key.
 | [`sdks/typescript`](sdks/typescript) | TypeScript client for Node, Deno, Bun and browsers, no runtime dependencies. |
 | [`sdks/python`](sdks/python) | Python client, sync and async, on httpx. |
 | [`sdks/kotlin`](sdks/kotlin) | Kotlin client for the JVM and Android: coroutines, OkHttp, kotlinx.serialization. |
+| [`sdks/php`](sdks/php) | PHP 8.2+ client with readonly typed models, no dependencies beyond ext-curl. |
 | [`contract/`](contract) | Tests that replay the API against the spec. |
 | [`ERRATA.md`](ERRATA.md) | Where the official docs and the live API disagree. |
 
-The TypeScript, Python and Kotlin packages are ready to publish (as
-`open-alldebrid` on npm, PyPI and Maven Central) but are not published yet.
+The TypeScript, Python, Kotlin and PHP packages are ready to publish (on npm,
+PyPI, Maven Central and Packagist) but are not published yet.
 
 ## Why a spec "checked against the live API"
 

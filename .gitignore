@@ -24,3 +24,9 @@ build/
 .gradle/
 sdks/kotlin/build/
 .kotlin/
+
+# PHP
+sdks/php/vendor/
+sdks/php/composer.lock
+sdks/php/.phpunit.cache/
+sdks/php/.phpunit.result.cache

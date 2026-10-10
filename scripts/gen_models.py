@@ -12,7 +12,7 @@ classes, with the same rules everywhere:
 - required fields are non-optional, every other field is optional.
 
 Usage: python scripts/gen_models.py <language> <output file>
-Languages: kotlin, csharp, swift
+Languages: kotlin, php (the output is the src directory)
 """
 
 from __future__ import annotations
@@ -207,6 +207,135 @@ def emit_kotlin(models: list[Model], codes: list[str], package: str) -> str:
     return "\n".join(out)
 
 
+# -------------------------------------------------------------------------- PHP
+
+PHP_HEADER = "<?php\n\n// Generated from openapi.yaml by scripts/gen_models.py. DO NOT EDIT.\n\ndeclare(strict_types=1);\n"
+
+
+def php_resolve(t: TypeRef, aliases: dict[str, TypeRef]) -> TypeRef:
+    """Replaces references to named maps (ServiceMap) with the map itself."""
+    if t.kind == "ref" and t.name in aliases:
+        return aliases[t.name]
+    return t
+
+
+def php_types(t: TypeRef, aliases: dict[str, TypeRef]) -> tuple[str, str]:
+    """The native type and the PHPDoc type of a value."""
+    t = php_resolve(t, aliases)
+    prim = {"string": "string", "int": "int", "long": "int", "double": "float", "bool": "bool", "any": "mixed"}
+    if t.kind in prim:
+        return prim[t.kind], prim[t.kind]
+    if t.kind == "list":
+        assert t.item
+        return "array", f"list<{php_types(t.item, aliases)[1]}>"
+    if t.kind == "map":
+        assert t.item
+        return "array", f"array<string, {php_types(t.item, aliases)[1]}>"
+    if t.kind == "flex":
+        return {
+            "StringOrInteger": ("string", "string"),
+            "StringOrStrings": ("array", "list<string>"),
+            "MagnetList": ("array", "list<Magnet>"),
+            "QuotaMap": ("array", "array<string, int>"),
+        }[t.name]
+    return t.name, t.name
+
+
+def php_reader(t: TypeRef, aliases: dict[str, TypeRef], value: str) -> str:
+    """An expression that converts a decoded JSON value to the field type."""
+    t = php_resolve(t, aliases)
+    simple = {"string": "string", "int": "int", "long": "int", "double": "float", "bool": "bool"}
+    if t.kind in simple:
+        return f"Hydrate::{simple[t.kind]}({value})"
+    if t.kind == "any":
+        return value
+    if t.kind == "list":
+        assert t.item
+        return f"Hydrate::list({value}, static fn (mixed $v): {php_types(t.item, aliases)[0]} => {php_reader(t.item, aliases, '$v')})"
+    if t.kind == "map":
+        assert t.item
+        return f"Hydrate::map({value}, static fn (mixed $v): {php_types(t.item, aliases)[0]} => {php_reader(t.item, aliases, '$v')})"
+    if t.kind == "flex":
+        return {
+            "StringOrInteger": f"Hydrate::flexString({value})",
+            "StringOrStrings": f"Hydrate::strings({value})",
+            "MagnetList": f"Hydrate::list(Hydrate::oneOrMany({value}), static fn (mixed $v): Magnet => Magnet::fromArray(Hydrate::object($v)))",
+            "QuotaMap": f"Hydrate::map(Hydrate::emptyListAsMap({value}), static fn (mixed $v): int => Hydrate::int($v))",
+        }[t.name]
+    return f"{t.name}::fromArray(Hydrate::object({value}))"
+
+
+def php_doc(lines: list[str], indent: str) -> list[str]:
+    lines = [line.replace("*/", "*&#47;") for line in lines]
+    if not lines:
+        return []
+    if len(lines) == 1:
+        return [f"{indent}/** {lines[0]} */"]
+    return [f"{indent}/**", *[f"{indent} * {line}".rstrip() for line in lines], f"{indent} */"]
+
+
+def emit_php(models: list[Model], codes: list[str], namespace: str) -> dict[str, str]:
+    aliases = {m.name: m.alias_of for m in models if m.alias_of is not None}
+    files: dict[str, str] = {}
+    for m in models:
+        if m.alias_of is not None:
+            continue
+        fields = sorted(m.fields, key=lambda f: not f.required)  # required parameters first
+        out = [PHP_HEADER, f"namespace {namespace}\\Model;", "", f"use {namespace}\\Internal\\Hydrate;", ""]
+        out += php_doc(doc_lines(m.description), "")
+        out += [f"final class {m.name}", "{"]
+        params = []
+        for f in fields:
+            native, doc = php_types(f.type, aliases)
+            nullable = "" if f.required else "?"
+            default = "" if f.required else " = null"
+            prop = camel(f.json_name)
+            desc = doc_lines(f.description)
+            if native != doc:
+                desc = [*desc, f"@var {doc}{'' if f.required else '|null'}"]
+            params += php_doc(desc, "        ")
+            params.append(f"        public readonly {nullable}{native} ${prop}{default},")
+        out += ["    public function __construct(", *params, "    ) {", "    }", ""]
+        out += [
+            "    /** @param array<array-key, mixed> $data A decoded JSON object. */",
+            "    public static function fromArray(array $data): self",
+            "    {",
+            "        return new self(",
+        ]
+        for f in fields:
+            prop = camel(f.json_name)
+            reader = php_reader(f.type, aliases, f"$data['{f.json_name}']")
+            if f.required:
+                out.append(f"            {prop}: {php_reader(f.type, aliases, f'Hydrate::required($data, {json_str(f.json_name)})')},")
+            else:
+                out.append(f"            {prop}: array_key_exists({json_str(f.json_name)}, $data) && $data[{json_str(f.json_name)}] !== null ? {reader} : null,")
+        out += ["        );", "    }", "}", ""]
+        files[f"Model/{m.name}.php"] = "\n".join(out)
+
+    consts = [f"    public const {code_constant(c)} = {json_str(c)};" for c in codes]
+    files["ErrorCode.php"] = "\n".join([
+        PHP_HEADER,
+        f"namespace {namespace};",
+        "",
+        "/** Error codes the API is known to return. The API may return others. */",
+        "final class ErrorCode",
+        "{",
+        *consts,
+        "",
+        "    /** Every code of the spec. */",
+        "    public const ALL = [",
+        *[f"        self::{code_constant(c)}," for c in codes],
+        "    ];",
+        "}",
+        "",
+    ])
+    return files
+
+
+def json_str(s: str) -> str:
+    return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
 # ------------------------------------------------------------------------- main
 
 
@@ -218,6 +347,15 @@ def main() -> int:
     models, codes = load_models()
     if lang == "kotlin":
         text = emit_kotlin(models, codes, "io.github.pierreemmanuelj.alldebrid")
+    elif lang == "php":
+        # The output is the src directory; models go to src/Model/.
+        for old in (output / "Model").glob("*.php"):
+            old.unlink()
+        for name, content in emit_php(models, codes, "OpenAllDebrid").items():
+            path = output / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content)
+        return 0
     else:
         print(f"unknown language {lang}", file=sys.stderr)
         return 2
