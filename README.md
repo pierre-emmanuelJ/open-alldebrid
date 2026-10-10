@@ -4,8 +4,8 @@
 [![Drift check](https://github.com/pierre-emmanuelJ/open-alldebrid/actions/workflows/drift.yml/badge.svg)](https://github.com/pierre-emmanuelJ/open-alldebrid/actions/workflows/drift.yml)
 
 An OpenAPI 3.1 description of the [AllDebrid](https://alldebrid.com) API (v4
-and v4.1), checked against the live API, with SDKs for Go, TypeScript and
-Python built on it.
+and v4.1), checked against the live API, with SDKs for Go, TypeScript,
+Python and Kotlin built on it.
 
 **[Interactive reference →](https://pierre-emmanuelj.github.io/open-alldebrid/)**
 Every endpoint, with real response examples, SDK samples, and a "Try it"
@@ -19,11 +19,12 @@ button that calls the API with the public demo key.
 | [`sdks/go`](sdks/go) | Go client, no dependencies. `go get github.com/pierre-emmanuelJ/open-alldebrid/sdks/go` |
 | [`sdks/typescript`](sdks/typescript) | TypeScript client for Node, Deno, Bun and browsers, no runtime dependencies. |
 | [`sdks/python`](sdks/python) | Python client, sync and async, on httpx. |
+| [`sdks/kotlin`](sdks/kotlin) | Kotlin client for the JVM and Android: coroutines, OkHttp, kotlinx.serialization. |
 | [`contract/`](contract) | Tests that replay the API against the spec. |
 | [`ERRATA.md`](ERRATA.md) | Where the official docs and the live API disagree. |
 
-The TypeScript and Python packages are ready to publish (as `open-alldebrid`
-on npm and PyPI) but are not published yet.
+The TypeScript, Python and Kotlin packages are ready to publish (as
+`open-alldebrid` on npm, PyPI and Maven Central) but are not published yet.
 
 ## Why a spec "checked against the live API"
 
@@ -46,7 +47,7 @@ This spec follows what the API actually sends, and keeps following it:
 
 ## The SDKs
 
-The three SDKs share one design: models generated from the spec, and a small
+The SDKs share one design: models generated from the spec, and a small
 hand-written client on top, one method per operation. Each SDK's tests check
 that every operation of the spec has a method that calls the right path, so
 the spec and the SDKs cannot drift apart.

@@ -6,6 +6,7 @@
 #   Go:         client := alldebrid.New(apiKey)
 #   TypeScript: const client = new AllDebrid({ apiKey });
 #   Python:     client = AllDebrid(api_key)
+#   Kotlin:     val client = AllDebrid(apiKey)
 
 ping:
   go: |
@@ -13,6 +14,8 @@ ping:
   typescript: |
     await client.ping();
   python: |
+    client.ping()
+  kotlin: |
     client.ping()
 
 getPin:
@@ -28,6 +31,10 @@ getPin:
     pin = client.get_pin()
     print("Open", pin["user_url"])
     api_key = client.wait_for_pin(pin)
+  kotlin: |
+    val pin = client.getPin()
+    println("Open ${pin.userUrl}")
+    val apiKey = client.waitForPin(pin)
 
 checkPin:
   go: |
@@ -42,6 +49,9 @@ checkPin:
     state = client.check_pin(pin["pin"], pin["check"])
     if state["activated"]:
         api_key = state["apikey"]
+  kotlin: |
+    val state = client.checkPin(pin.pin, pin.check)
+    if (state.activated) println(state.apikey)
 
 getHosts:
   go: |
@@ -55,6 +65,9 @@ getHosts:
     hosts = client.hosts()
     for name, host in hosts["hosts"].items():
         print(name, host["domains"])
+  kotlin: |
+    val hosts = client.hosts()
+    hosts.hosts.forEach { (name, host) -> println("$name ${host.domains}") }
 
 getHostDomains:
   go: |
@@ -63,6 +76,8 @@ getHostDomains:
     const domains = await client.hostDomains();
   python: |
     domains = client.host_domains()
+  kotlin: |
+    val domains = client.hostDomains()
 
 getHostPriority:
   go: |
@@ -71,6 +86,8 @@ getHostPriority:
     const ranks = await client.hostPriority(); // { host: rank }
   python: |
     ranks = client.host_priority()  # {host: rank}
+  kotlin: |
+    val ranks = client.hostPriority() // host -> rank
 
 getUser:
   go: |
@@ -82,6 +99,9 @@ getUser:
   python: |
     user = client.user()
     print(user["username"], user["isPremium"])
+  kotlin: |
+    val user = client.user()
+    println("${user.username} ${user.isPremium}")
 
 getUserHosts:
   go: |
@@ -93,6 +113,9 @@ getUserHosts:
   python: |
     hosts = client.user_hosts()
     print(hosts["rapidgator"].get("quota"))
+  kotlin: |
+    val hosts = client.userHosts()
+    println(hosts["rapidgator"]?.quota)
 
 getVerificationStatus:
   go: |
@@ -111,6 +134,13 @@ getVerificationStatus:
         if err.code == "AUTH_BLOCKED":
             v = client.verification_status(err.token)
             print(v["verif"])  # waiting, allowed or denied
+  kotlin: |
+    catch (e: AllDebridException) {
+        if (e.code == ErrorCodes.AUTH_BLOCKED) {
+            val v = client.verificationStatus(e.token!!)
+            println(v.verif) // waiting, allowed or denied
+        }
+    }
 
 resendVerification:
   go: |
@@ -119,6 +149,8 @@ resendVerification:
     await client.resendVerification(token);
   python: |
     client.resend_verification(token)
+  kotlin: |
+    client.resendVerification(token)
 
 clearNotification:
   go: |
@@ -127,6 +159,8 @@ clearNotification:
     await client.clearNotification(user.notifications[0]!);
   python: |
     client.clear_notification(user["notifications"][0])
+  kotlin: |
+    client.clearNotification(user.notifications.first())
 
 getLinkInfos:
   go: |
@@ -148,6 +182,12 @@ getLinkInfos:
         if "error" in info:
             continue  # this link is down or unsupported
         print(info["filename"], info["size"])
+  kotlin: |
+    val infos = client.linkInfos(listOf("https://1fichier.com/?abcdefghij"))
+    for (info in infos) {
+        if (info.error != null) continue // this link is down or unsupported
+        println("${info.filename} ${info.size}")
+    }
 
 extractRedirector:
   go: |
@@ -156,6 +196,8 @@ extractRedirector:
     const links = await client.extractRedirector("https://protected.example/abc");
   python: |
     links = client.extract_redirector("https://protected.example/abc")
+  kotlin: |
+    val links = client.extractRedirector("https://protected.example/abc")
 
 unlockLink:
   go: |
@@ -173,6 +215,9 @@ unlockLink:
   python: |
     u = client.unlock("https://1fichier.com/?abcdefghij")
     link = client.wait_delayed_link(u["delayed"]) if u.get("delayed") else u["link"]
+  kotlin: |
+    val u = client.unlock("https://1fichier.com/?abcdefghij")
+    val link = u.delayed?.let { client.waitDelayedLink(it.value) } ?: u.link
 
 getStreamingLink:
   go: |
@@ -184,6 +229,9 @@ getStreamingLink:
   python: |
     u = client.unlock(video_url)
     s = client.streaming_link(u["id"], u["streaming"][0]["id"])
+  kotlin: |
+    val u = client.unlock(videoUrl)
+    val s = client.streamingLink(u.id!!, u.streaming!!.first().id)
 
 getDelayedLink:
   go: |
@@ -192,6 +240,8 @@ getDelayedLink:
     const link = await client.waitDelayedLink(delayedId, { intervalMs: 5000 });
   python: |
     link = client.wait_delayed_link(delayed_id, interval=5)
+  kotlin: |
+    val link = client.waitDelayedLink(delayedId, 5.seconds)
 
 uploadMagnets:
   go: |
@@ -201,6 +251,8 @@ uploadMagnets:
     const [magnet] = await client.uploadMagnets(["magnet:?xt=urn:btih:..."]);
   python: |
     [magnet] = client.upload_magnets(["magnet:?xt=urn:btih:..."])
+  kotlin: |
+    val (magnet) = client.uploadMagnets(listOf("magnet:?xt=urn:btih:..."))
 
 uploadTorrentFiles:
   go: |
@@ -212,6 +264,9 @@ uploadTorrentFiles:
   python: |
     with open("file.torrent", "rb") as f:
         [magnet] = client.upload_torrent_files([("file.torrent", f.read())])
+  kotlin: |
+    val file = TorrentFile("file.torrent", File("file.torrent").readBytes())
+    val (magnet) = client.uploadTorrentFiles(listOf(file))
 
 getMagnetStatus:
   go: |
@@ -232,6 +287,12 @@ getMagnetStatus:
 
     live = client.live_magnets()  # only transfers changes
     magnets = live.poll()
+  kotlin: |
+    val all = client.magnets()
+    val one = client.magnet(id) // with its files
+
+    val live = client.liveMagnets() // only transfers changes
+    val magnets = live.poll()
 
 getMagnetFiles:
   go: |
@@ -240,6 +301,8 @@ getMagnetFiles:
     const files = await client.magnetFiles([id1, id2]);
   python: |
     files = client.magnet_files([id1, id2])
+  kotlin: |
+    val files = client.magnetFiles(listOf(id1, id2))
 
 deleteMagnet:
   go: |
@@ -248,6 +311,8 @@ deleteMagnet:
     await client.deleteMagnet(id);
   python: |
     client.delete_magnet(magnet_id)
+  kotlin: |
+    client.deleteMagnet(id)
 
 restartMagnets:
   go: |
@@ -259,6 +324,9 @@ restartMagnets:
   python: |
     client.restart_magnet(magnet_id)
     results = client.restart_magnets([id1, id2])
+  kotlin: |
+    client.restartMagnet(id)
+    val results = client.restartMagnets(listOf(id1, id2))
 
 getSavedLinks:
   go: |
@@ -267,6 +335,8 @@ getSavedLinks:
     const links = await client.savedLinks();
   python: |
     links = client.saved_links()
+  kotlin: |
+    val links = client.savedLinks()
 
 saveLinks:
   go: |
@@ -275,6 +345,8 @@ saveLinks:
     await client.saveLinks(["https://1fichier.com/?abcdefghij"]);
   python: |
     client.save_links(["https://1fichier.com/?abcdefghij"])
+  kotlin: |
+    client.saveLinks(listOf("https://1fichier.com/?abcdefghij"))
 
 deleteSavedLinks:
   go: |
@@ -283,6 +355,8 @@ deleteSavedLinks:
     await client.deleteSavedLinks(["https://1fichier.com/?abcdefghij"]);
   python: |
     client.delete_saved_links(["https://1fichier.com/?abcdefghij"])
+  kotlin: |
+    client.deleteSavedLinks(listOf("https://1fichier.com/?abcdefghij"))
 
 getHistory:
   go: |
@@ -291,6 +365,8 @@ getHistory:
     const links = await client.history();
   python: |
     links = client.history()
+  kotlin: |
+    val links = client.history()
 
 purgeHistory:
   go: |
@@ -299,6 +375,8 @@ purgeHistory:
     await client.purgeHistory();
   python: |
     client.purge_history()
+  kotlin: |
+    client.purgeHistory()
 
 getVoucherBalance:
   go: |
@@ -307,6 +385,8 @@ getVoucherBalance:
     const balance = await client.voucherBalance();
   python: |
     balance = client.voucher_balance()
+  kotlin: |
+    val balance = client.voucherBalance()
 
 getVouchers:
   go: |
@@ -315,6 +395,8 @@ getVouchers:
     const v = await client.vouchers(30, 5);
   python: |
     v = client.vouchers(30, 5)
+  kotlin: |
+    val v = client.vouchers(30, 5)
 
 generateVouchers:
   go: |
@@ -323,3 +405,5 @@ generateVouchers:
     const v = await client.generateVouchers(30, 5);
   python: |
     v = client.generate_vouchers(30, 5)
+  kotlin: |
+    val v = client.generateVouchers(30, 5)

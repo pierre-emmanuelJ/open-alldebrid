@@ -19,3 +19,8 @@ build/
 .DS_Store
 .idea/
 .vscode/
+
+# Gradle
+.gradle/
+sdks/kotlin/build/
+.kotlin/

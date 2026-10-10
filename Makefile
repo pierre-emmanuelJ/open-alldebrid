@@ -1,7 +1,7 @@
 # Local entry points; CI runs the same steps (.github/workflows/ci.yml).
-# Needs go, node/npm and python 3.11+ on PATH.
+# Needs go, node/npm, python 3.11+ (with PyYAML) and a JDK 21 on PATH.
 
-.PHONY: all lint generate test test-contract test-go test-typescript test-python test-live drift
+.PHONY: all lint generate test test-contract test-go test-typescript test-python test-kotlin test-live drift
 
 all: lint generate test
 
@@ -13,8 +13,9 @@ generate:
 	cd sdks/go && go generate ./...
 	cd sdks/typescript && npm run generate
 	cd sdks/python && ./scripts/generate.sh && python scripts/unasync.py
+	python3 scripts/gen_models.py kotlin sdks/kotlin/src/main/kotlin/io/github/pierreemmanuelj/alldebrid/Models.kt
 
-test: test-contract test-go test-typescript test-python
+test: test-contract test-go test-typescript test-python test-kotlin
 
 test-contract:
 	cd contract && go test -count=1 ./...
@@ -27,6 +28,9 @@ test-typescript:
 
 test-python:
 	cd sdks/python && ruff check . && ruff format --check . && mypy && pytest
+
+test-kotlin:
+	cd sdks/kotlin && ./gradlew build
 
 # Contract tests against a real account (read-only unless ALLDEBRID_LIVE_WRITE=1).
 # The output may show response values; do not run it where it is public.
