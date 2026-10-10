@@ -1,0 +1,81 @@
+Changelog
+20/01/2025
+API : Updated /user/hosts to /v4.1/, removing streams and redirectors from the response, use /hosts to get those static data
+15/01/2025
+API : Removed agent and version requirements
+API : Enabled POST requests and changed the default API usage to use POST to send data
+Doc : Added All endpoints section to list all endpoints grouped by HTTP method and versions
+API : Updated /pin/get endpoint to version /v4.1/ removing the check_url response property
+17/10/2024
+API : Added quotaMax property to the /user/hosts endpoint
+16/10/2024
+API : Updated /magnet/status endpoint to version /v4.1/, moving magnets files informations to their dedicated endpoint
+API : Deprecated /v4/magnet/status in favor of /v4.1/magnet/status
+API : Added deprecation status property deprecated on deprecated endpoints
+14/11/2023
+API : Removed HTTP status code for 400 and 401
+16/08/2023
+API : Added documentaion for the reseller /user/verif/resend endpoint
+15/08/2023
+API : Added documentaion for the reseller /user/verif endpoint
+07/12/2022
+API : Added documentaion for the reseller voucher/* endpoints
+10/04/2022
+API : link/redirector endpoint now return encrypted links
+06/04/2021
+API : hosts/regexp endpoint removed
+API : added Live Mode documentation for the magnet/status endpoint
+21/08/2020
+API : user/links/add endpoint now accepts multiple links
+31/07/2020
+API : Added status filter parameter to magnet/status endpoint
+API : magnet/restart endpoint now accepts multiple IDs with the ids parameter
+API : Added completionDate property to magnet/status endpoint response
+22/07/2020
+API : Added isSubscribed property to user endpoint
+30/03/2020
+API : Added remainingTrialQuota property to user endpoint
+27/03/2020
+API : Documented NO_SERVER error
+API : Added hostsOnly parameter to /hosts and /user/hosts
+API : Added isTrial property to /user endpoint
+26/03/2020
+API : Major format change for /hosts : Added host name as keys, added "streams" properties, and unified this endpoint with /user/hosts response format, including name, type, regexp and status when available.
+API : Added "streams" properties for /hosts/domains
+API : Changed keys from host domain to host name in /hosts/priority to unify response formats across the API.
+API : Deprecating /hosts/regexps
+API : Added explicit "name" property to /user/hosts
+04/03/2020
+API : Documented user links endpoints : /user/links, /user/links/save, /user/links/delete, /user/history and /user/history/delete
+03/03/2020
+API : Added support of Authentication : Bearer <apikey>
+01/03/2020
+API : On /hosts, changed response format to match /user/hosts : domain and altDomains merged into the domains property.
+28/02/2020
+API : On /pin/get, changed expired_in property to expires_in and added an explicit check property
+API : On /user, added fidelityPoints property
+01/02/2020
+API : API docs creation !
+API : user/links/add endpoint now accepts multiple links
+31/07/2020
+API : Added status filter parameter to magnet/status endpoint
+API : magnet/restart endpoint now accepts multiple IDs with the ids parameter
+API : Added completionDate property to magnet/status endpoint response
+22/07/2020
+API : Added isSubscribed property to user endpoint
+30/03/2020
+API : Added remainingTrialQuota property to user endpoint
+27/03/2020
+DOC : Documented NO_SERVER error
+API : Added hostsOnly parameter to /hosts and /user/hosts
+API : Added isTrial property to /user endpoint
+26/03/2020
+API : Major format change for /hosts : Added host name as keys, added "streams" properties, and unified this endpoint with /user/hosts response format, including name, type, regexp and status when available.
+API : Added "streams" properties for /hosts/domains
+API : Changed keys from host domain to host name in /hosts/priority to unify response formats across the API.
+API : Deprecating /hosts/regexps
+API : Added explicit "name" property to /user/hosts
+04/03/2020
+DOC : Documented user links endpoints : /user/links, /user/links/save, /user/links/delete, /user/history and /user/history/delete
+--
+PHP cURL

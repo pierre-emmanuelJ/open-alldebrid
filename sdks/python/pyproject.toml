@@ -35,6 +35,7 @@ dev = [
   "mypy==2.3.1",
   "ruff==0.16.9",
   "pyyaml==6.0.3",
+  "types-PyYAML==6.0.12.20260906",
   "datamodel-code-generator==0.82.0",
 ]
 

@@ -1,0 +1,74 @@
+name: Drift check
+
+# Every week, check that the live API still matches the spec and that the
+# official docs have not changed since the spec was last reviewed. Either
+# change opens (or updates) an issue.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  api:
+    name: Live API matches the spec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: contract/go.mod
+          cache-dependency-path: contract/go.sum
+      - name: Contract tests
+        id: test
+        working-directory: contract
+        run: |
+          set -o pipefail
+          go test -count=1 ./... 2>&1 | tee "$RUNNER_TEMP/contract.txt"
+      - name: Report
+        if: failure() && steps.test.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The weekly contract tests failed: the live API no longer matches \`openapi.yaml\`."
+            echo
+            echo '```'
+            grep -E -- '--- FAIL|does not|declare|want|error' "$RUNNER_TEMP/contract.txt" | head -80
+            echo '```'
+            echo
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } > "$RUNNER_TEMP/body.md"
+          scripts/open-issue.sh "The live API no longer matches the spec" "$RUNNER_TEMP/body.md"
+
+  docs:
+    name: Official docs changelog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Compare
+        id: compare
+        run: |
+          set -o pipefail
+          python scripts/upstream_changelog.py | tee "$RUNNER_TEMP/diff.txt"
+      - name: Report
+        if: failure() && steps.compare.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The changelog of https://docs.alldebrid.com changed. Review the spec, then run"
+            echo "\`python scripts/upstream_changelog.py --update\`."
+            echo
+            echo '```diff'
+            head -120 "$RUNNER_TEMP/diff.txt"
+            echo '```'
+          } > "$RUNNER_TEMP/body.md"
+          scripts/open-issue.sh "The official AllDebrid docs changed" "$RUNNER_TEMP/body.md"
