@@ -215,6 +215,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HostsResponse"
+              examples:
+                example:
+                  summary: "Example"
+                  value: {"status": "success", "data": {"hosts": {"1fichier": {"name": "1fichier", "type": "premium", "domains": ["1fichier.com", "megadl.fr", "alterupload.com", "cjoint.net", "desfichiers.com", "dfichiers.com", "mesfichiers.org", "piecejointe.net", "pjointe.com", "tenvoi.com", "dl4free.com"], "regexps": ["((1fichier\\.com|megadl\\.fr|alterupload\\.com|cjoint\\.net|desfichiers\\.com|dfichiers\\.com|mesfichiers\\.org|piecejointe\\.net|pjointe\\.com|tenvoi\\.com|dl4free\\.com)/\\?[a-zA-Z0-9]{5,30}(&pw=[^&]+)?)"], "regexp": "((1fichier\\.com|megadl\\.fr|alterupload\\.com|cjoint\\.net|desfichiers\\.com|dfichiers\\.com|mesfichiers\\.org|piecejointe\\.net|pjointe\\.com|tenvoi\\.com|dl4free\\.com)/\\?[a-zA-Z0-9]{5,30}(&pw=[^&]+)?)", "status": true}, "rapidgator": {"name": "rapidgator", "type": "premium", "domains": ["rapidgator.net", "rg.to", "rapidgator.asia"], "regexps": ["(rapidgator\\.net|rg\\.to|rapidgator\\.asia)/file/([0-9a-zA-Z]{32})", "(rapidgator\\.net/file/[0-9]{7,8})"], "regexp": "((rapidgator\\.net|rg\\.to|rapidgator\\.asia)/file/([0-9a-zA-Z]{32}))|((rapidgator\\.net/file/[0-9]{7,8}))", "status": true}}, "streams": {"dailymotion": {"name": "dailymotion", "type": "free", "domains": ["dailymotion.com", "geo.dailymotion.com", "lequipe.fr", "dai.ly"], "regexps": ["(?ix)\n                    (?:https?:)?//\n                    (?:\n                        dai\\.ly/|\n                        (?:\n                            (?:(?:www|touch|geo)\\.)?dailymotion\\.[a-z]{2,3}|\n                            (?:www\\.)?lequipe\\.fr\n                        )/\n                        (?:\n                            swf/(?!video)|\n                            (?:(?:crawler|embed|swf)/)?video/|\n                            player(?:/[\\da-z]+)?\\.html\\?(?:video|(playlist))=\n                        )\n                    )\n                    ([^/?_&#]+)(?:[\\w-]*\\?playlist=(x[0-9a-z]+))?\n    ", "(?:https?://)?(?:www\\.)?dailymotion\\.[a-z]{2,3}/playlist/(x[0-9a-z]+)", "https?://(?:www\\.)?dailymotion\\.[a-z]{2,3}/search/([^/?#]+)/videos", "https?://(?:www\\.)?dailymotion\\.[a-z]{2,3}/(?!(?:embed|swf|#|video|playlist|search|crawler)/)(?:(?:old/)?user/)?([^/?#]+)"], "regexp": "((?ix)\n                    (?:https?:)?//\n                    (?:\n                        dai\\.ly/|\n                        (?:\n                            (?:(?:www|touch|geo)\\.)?dailymotion\\.[a-z]{2,3}|\n                            (?:www\\.)?lequipe\\.fr\n                        )/\n                        (?:\n                            swf/(?!video)|\n                            (?:(?:crawler|embed|swf)/)?video/|\n                            player(?:/[\\da-z]+)?\\.html\\?(?:video|(playlist))=\n                        )\n                    )\n                    ([^/?_&#]+)(?:[\\w-]*\\?playlist=(x[0-9a-z]+))?\n    )|((?:https?://)?(?:www\\.)?dailymotion\\.[a-z]{2,3}/playlist/(x[0-9a-z]+))|(https?://(?:www\\.)?dailymotion\\.[a-z]{2,3}/search/([^/?#]+)/videos)|(https?://(?:www\\.)?dailymotion\\.[a-z]{2,3}/(?!(?:embed|swf|#|video|playlist|search|crawler)/)(?:(?:old/)?user/)?([^/?#]+))"}, "twitch": {"name": "twitch", "type": "free", "domains": ["clips.twitch.tv", "twitch.tv", "m.twitch.tv", "go.twitch.tv", "player.twitch.tv"], "regexps": ["https?://(?:clips\\.twitch\\.tv/(?:embed\\?.*?\\bclip=|(?:[^/]+/)*)|(?:(?:www|go|m)\\.)?twitch\\.tv/(?:[^/]+/)?clip/)([^/?#&]+)", "https?://(?:(?:www|go|m)\\.)?twitch\\.tv/collections/([^/]+)", "https?://(?:(?:(?:www|go|m)\\.)?twitch\\.tv/|player\\.twitch\\.tv/\\?.*?\\bchannel=)([^/#?]+)", "https?://(?:(?:www|go|m)\\.)?twitch\\.tv/([^/]+)/(?:clips|videos/*?\\?.*?\\bfilter=clips)", "https?://(?:(?:www|go|m)\\.)?twitch\\.tv/([^/]+)/videos/*?\\?.*?\\bfilter=collections", "https?://(?:(?:www|go|m)\\.)?twitch\\.tv/([^/]+)/(?:videos|profile)", "https?://(?:(?:(?:www|go|m)\\.)?twitch\\.tv/(?:[^/]+/v(?:ideo)?|videos)/|player\\.twitch\\.tv/\\?.*?\\bvideo=v?|www\\.twitch\\.tv/[^/]+/schedule\\?vodID=)(\\d+)"], "regexp": "(https?://(?:clips\\.twitch\\.tv/(?:embed\\?.*?\\bclip=|(?:[^/]+/)*)|(?:(?:www|go|m)\\.)?twitch\\.tv/(?:[^/]+/)?clip/)([^/?#&]+))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/collections/([^/]+))|(https?://(?:(?:(?:www|go|m)\\.)?twitch\\.tv/|player\\.twitch\\.tv/\\?.*?\\bchannel=)([^/#?]+))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/([^/]+)/(?:clips|videos/*?\\?.*?\\bfilter=clips))|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/([^/]+)/videos/*?\\?.*?\\bfilter=collections)|(https?://(?:(?:www|go|m)\\.)?twitch\\.tv/([^/]+)/(?:videos|profile))|(https?://(?:(?:(?:www|go|m)\\.)?twitch\\.tv/(?:[^/]+/v(?:ideo)?|videos)/|player\\.twitch\\.tv/\\?.*?\\bvideo=v?|www\\.twitch\\.tv/[^/]+/schedule\\?vodID=)(\\d+))"}}, "redirectors": {"1fichier": {"name": "1fichier", "type": "premium", "domains": ["1fichier.com"], "regexps": ["(1fichier.com/dir/[a-zA-Z0-9]+)"], "heavy": false, "regexp": "(1fichier.com/dir/[a-zA-Z0-9]+)"}, "adfly": {"name": "adfly", "type": "premium", "domains": ["adf.ly"], "regexps": ["(adf\\.ly/[0-9]+/(https?://[^ \"'<>]+))", "(adf\\.ly/[0-9a-zA-Z]+)"], "heavy": false, "regexp": "((adf\\.ly/[0-9]+/(https?://[^ \"'<>]+)))|((adf\\.ly/[0-9a-zA-Z]+))"}}}}
 
   /v4/hosts/domains:
     get:
@@ -237,6 +241,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HostDomainsResponse"
+              examples:
+                example:
+                  summary: "Example"
+                  value: {"status": "success", "data": {"hosts": ["1fichier.com", "megadl.fr", "alterupload.com", "cjoint.net"], "streams": ["dailymotion.com", "geo.dailymotion.com", "lequipe.fr", "dai.ly"], "redirectors": ["1fichier.com", "adf.ly", "pan.baidu.com", "big.to"]}}
 
   /v4/hosts/priority:
     get:
@@ -255,6 +263,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HostPriorityResponse"
+              examples:
+                example:
+                  summary: "Example"
+                  value: {"status": "success", "data": {"hosts": {"1fichier": 3, "4shared": 4}}}
 
   /v4/user:
     get:
@@ -306,6 +318,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserHostsResponse"
+              examples:
+                test_it:
+                  summary: "Test it"
+                  value: {"status": "success", "data": {"hosts": {"1fichier": {"name": "1fichier", "type": "premium", "domains": ["1fichier.com", "megadl.fr", "alterupload.com", "cjoint.net", "desfichiers.com", "dfichiers.com", "mesfichiers.org", "piecejointe.net", "pjointe.com", "tenvoi.com", "dl4free.com"], "regexps": ["((1fichier\\.com|megadl\\.fr|alterupload\\.com|cjoint\\.net|desfichiers\\.com|dfichiers\\.com|mesfichiers\\.org|piecejointe\\.net|pjointe\\.com|tenvoi\\.com|dl4free\\.com)/\\?[a-zA-Z0-9]{5,30}(&pw=[^&]+)?)"], "regexp": "((1fichier\\.com|megadl\\.fr|alterupload\\.com|cjoint\\.net|desfichiers\\.com|dfichiers\\.com|mesfichiers\\.org|piecejointe\\.net|pjointe\\.com|tenvoi\\.com|dl4free\\.com)/\\?[a-zA-Z0-9]{5,30}(&pw=[^&]+)?)", "status": true}, "rapidgator": {"name": "rapidgator", "type": "premium", "domains": ["rapidgator.net", "rg.to", "rapidgator.asia"], "regexps": ["(rapidgator\\.net|rg\\.to|rapidgator\\.asia)/file/([0-9a-zA-Z]{32})", "(rapidgator\\.net/file/[0-9]{7,8})"], "regexp": "((rapidgator\\.net|rg\\.to|rapidgator\\.asia)/file/([0-9a-zA-Z]{32}))|((rapidgator\\.net/file/[0-9]{7,8}))", "status": true, "quota": 100000, "quotaMax": 100000, "quotaType": "traffic"}}}}
 
   /v4/user/verif:
     post:
@@ -334,6 +350,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/VerificationResponse"
+              examples:
+                waiting:
+                  summary: "Waiting"
+                  value: {"status": "success", "data": {"verif": "waiting", "resendable": false}}
+                allowed:
+                  summary: "Allowed"
+                  value: {"status": "success", "data": {"verif": "allowed", "apikey": "staticDemoApikeyPrem"}}
+                denied:
+                  summary: "Denied"
+                  value: {"status": "success", "data": {"verif": "denied"}}
+                expired:
+                  summary: "Expired"
+                  value: {"status": "error", "error": {"code": "PIN_EXPIRED", "message": "The pin is expired demo"}}
 
   /v4/user/verif/resend:
     post:
@@ -360,6 +389,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResendVerificationResponse"
+              examples:
+                resend:
+                  summary: "Resend"
+                  value: {"status": "success", "data": {"sent": true}}
+                already_resent:
+                  summary: "Already resent"
+                  value: {"status": "error", "error": {"code": "ALREADY_SENT", "message": "The verification email has already been sent again demo"}}
+                expired:
+                  summary: "Expired"
+                  value: {"status": "error", "error": {"code": "PIN_EXPIRED", "message": "The pin is expired demo"}}
 
   /v4/user/notification/clear:
     post:
@@ -382,6 +421,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                clear_notif:
+                  summary: "Clear notif"
+                  value: {"status": "success", "data": {"message": "Notification was cleared"}}
 
   /v4/link/infos:
     post:
@@ -414,6 +457,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LinkInfosResponse"
+              examples:
+                example_file:
+                  summary: "Example file"
+                  value: {"status": "success", "data": {"infos": [{"link": "https://example.com/file2MB.txt", "filename": "example.file2MB.txt.txt", "size": 2097152, "host": "example", "hostDomain": "example.com"}]}}
+                errors:
+                  summary: "Errors"
+                  value: {"status": "success", "data": {"infos": [{"link": "https://example.com/down", "error": {"code": "LINK_DOWN", "message": "This link is not available on the file hoster website"}}, {"link": "https://not-supported.com/somefile.txt", "error": {"code": "LINK_HOST_NOT_SUPPORTED", "message": "This host or link is not supported"}}]}}
 
   /v4/link/redirector:
     post:
@@ -440,6 +490,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RedirectorResponse"
+              examples:
+                get_links:
+                  summary: "Get links"
+                  value: {"status": "success", "data": {"links": ["https://redirect.alldebrid.com/mnsaj-0-fcdeaf3287", "https://redirect.alldebrid.com/mnsaj-1-fcdeaf3287"]}}
+                not_supported:
+                  summary: "Not supported"
+                  value: {"status": "error", "error": {"code": "REDIRECTOR_NOT_SUPPORTED", "message": "Redirector not supported demo"}}
+                rate_limited:
+                  summary: "Rate limited"
+                  value: {"status": "error", "error": {"code": "REDIRECTOR_RATE_LIMITED", "message": "Too much request to unlock folder demo"}}
+                error:
+                  summary: "Error"
+                  value: {"status": "error", "error": {"code": "REDIRECTOR_ERROR", "message": "Could not extract links demo"}}
 
   /v4/link/unlock:
     post:
@@ -509,6 +572,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StreamingResponse"
+              examples:
+                choose_quality:
+                  summary: "Choose quality"
+                  value: {"status": "success", "data": {"link": "http://ombfyx.alld.io/dl/abcdefgh12/somefile.mp4", "filename": "Some video", "filesize": 699400192}}
+                invalid_gen:
+                  summary: "Invalid gen"
+                  value: {"status": "error", "error": {"code": "STREAM_INVALID_GEN_ID", "message": "Invalid generation ID demo"}}
+                invalid_stream:
+                  summary: "Invalid stream"
+                  value: {"status": "error", "error": {"code": "STREAM_INVALID_STREAM_ID", "message": "Invalid stream ID demo"}}
 
   /v4/link/delayed:
     post:
@@ -535,6 +608,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DelayedResponse"
+              examples:
+                still_processing:
+                  summary: "Still processing"
+                  value: {"status": "success", "data": {"status": 1, "time_left": 30}}
+                link_ready:
+                  summary: "Link ready"
+                  value: {"status": "success", "data": {"status": 2, "time_left": 0, "link": "https://ombfyx.debrid.it/dl/abcdefgh12/file.txt"}}
+                invalid_id:
+                  summary: "Invalid id"
+                  value: {"status": "error", "error": {"code": "DELAYED_INVALID_ID", "message": "This delayed link id is invalid demo"}}
 
   /v4/magnet/upload:
     post:
@@ -567,6 +650,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UploadMagnetsResponse"
+              examples:
+                upload_magnet:
+                  summary: "Upload magnet"
+                  value: {"status": "success", "data": {"magnets": [{"magnet": "magnet:?xt=urn:btih:3A842783e3005495d5d1637f5364b59343c7844707&dn=ubuntu-18.04.2-live-server-amd64.iso", "hash": "3A842783e3005495d5d1637f5364b59343c7844707", "name": "ubuntu-18.04.2-live-server-amd64.iso", "size": 48216647, "id": 123456, "ready": false}]}}
+                error:
+                  summary: "Error"
+                  value: {"status": "error", "error": {"code": "MAGNET_NO_URI", "message": "No magnet sent demo"}}
 
   /v4/magnet/upload/file:
     post:
@@ -597,6 +687,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UploadTorrentFilesResponse"
+              examples:
+                upload_torrent:
+                  summary: "Upload torrent"
+                  value: {"status": "success", "data": {"files": [{"file": "ubuntu-18.04.2-live-server-amd64.iso.torrent", "hash": "842783e3005495d5d1637f5364b59343c7844707", "name": "Ubuntu 18.04.2 live server amd64", "size": 1954210119, "id": 123456, "ready": false}]}}
+                error:
+                  summary: "Error"
+                  value: {"status": "error", "error": {"code": "MAGNET_FILE_UPLOAD_FAILED", "message": "File upload failed demo"}}
 
   /v4.1/magnet/status:
     post:
@@ -632,6 +729,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MagnetStatusResponse"
+              examples:
+                get_all:
+                  summary: "Get all"
+                  value: {"status": "success", "data": {"magnets": [{"id": 123456, "filename": "ubuntu-16.04.2-live-server-amd64.iso", "hash": "123456789cef825718eda30637230585e3330599", "size": 587400285, "status": "Downloading", "statusCode": 1, "downloaded": 255400192, "uploaded": 0, "seeders": 7, "downloadSpeed": 18874368, "uploadSpeed": 0, "uploadDate": 1557133868, "completionDate": 0}, {"id": 56789, "filename": "ubuntu-20.04.2-live-server-amd64.iso", "hash": "987654321cef825718eda30637230585e3330599", "size": 256400192, "status": "Ready", "statusCode": 4, "uploadDate": 1657133868, "completionDate": 1657133968, "nbLinks": 1}, {"id": 99999, "filename": "ubuntu-12.04.2-live-server-amd64.iso", "hash": "999999999cef825718eda30637230585e3330599", "size": 256400192, "status": "Error : Download took more than 72h", "statusCode": 10, "uploadDate": 1657133868}]}}
+                get_magnet_status:
+                  summary: "Get magnet status"
+                  value: {"status": "success", "data": {"magnets": [{"id": 56789, "filename": "ubuntu-20.04.2-live-server-amd64.iso", "hash": "987654321cef825718eda30637230585e3330599", "size": 256400192, "status": "Ready", "statusCode": 4, "uploadDate": 1657133868, "completionDate": 1657133968, "nbLinks": 1, "files": [{"n": "ubuntu-20.04.2-live-server-amd64.iso", "s": 145517304, "l": "https://alldebrid.com/f/xxxxxxaaaabbbbcccc"}, {"n": "docs", "e": [{"n": "README.txt", "s": 87207, "l": "https://alldebrid.com/f/qsklqdaaaabbbbcccc"}, {"n": "INSTALL.txt", "s": 242117, "l": "https://alldebrid.com/f/48qsoisg4aaabbbbcccc"}]}]}]}}
+                get_active_magnets:
+                  summary: "Get active magnets"
+                  value: {"status": "success", "data": {"magnets": [{"id": 123456, "filename": "ubuntu-16.04.2-live-server-amd64.iso", "hash": "123456789cef825718eda30637230585e3330599", "size": 587400285, "status": "Downloading", "statusCode": 1, "downloaded": 255400192, "uploaded": 0, "seeders": 7, "downloadSpeed": 18874368, "uploadSpeed": 0, "uploadDate": 1557133868, "completionDate": 0}]}}
+                first_data_fetch:
+                  summary: "First data fetch"
+                  value: {"status": "success", "data": {"fullsync": true, "counter": 1, "magnets": [{"id": 123456, "filename": "ubuntu-16.04.2-live-server-amd64.iso", "hash": "123456789cef825718eda30637230585e3330599", "size": 587400285, "status": "Downloading", "statusCode": 1, "downloaded": 255400192, "uploaded": 0, "seeders": 7, "downloadSpeed": 18874368, "uploadSpeed": 0, "uploadDate": 1557133868, "completionDate": 0}, {"id": 56789, "filename": "ubuntu-20.04.2-live-server-amd64.iso", "hash": "987654321cef825718eda30637230585e3330599", "size": 256400192, "status": "Ready", "statusCode": 4, "uploadDate": 1657133868, "completionDate": 1657133968, "nbLinks": 1}, {"id": 99999, "filename": "ubuntu-12.04.2-live-server-amd64.iso", "hash": "999999999cef825718eda30637230585e3330599", "size": 256400192, "status": "Error : Download took more than 72h", "statusCode": 10, "uploadDate": 1657133868}]}}
+                delta_sync:
+                  summary: "Delta sync"
+                  value: {"status": "success", "data": {"counter": 2, "magnets": {"id": 123456, "downloaded": 358454178, "seeders": 9, "downloadSpeed": 27874410}}}
 
   /v4/magnet/files:
     post:
@@ -661,6 +774,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MagnetFilesResponse"
+              examples:
+                get_files:
+                  summary: "Get files"
+                  value: {"status": "success", "data": {"magnets": [{"id": 56789, "files": [{"n": "ubuntu-18.04.2-live-server-amd64.iso", "s": 145517304, "l": "https://alldebrid.com/f/xxxxxxaaaabbbbcccc"}, {"n": "docs", "e": [{"n": "README.txt", "s": 87207, "l": "https://alldebrid.com/f/qsklqdaaaabbbbcccc"}, {"n": "INSTALL.txt", "s": 242117, "l": "https://alldebrid.com/f/48qsoisg4aaabbbbcccc"}]}]}]}}
+                error:
+                  summary: "Error"
+                  value: {"status": "error", "error": {"code": "MAGNET_INVALID_ID", "message": "This magnet ID does not exists or is invalid demo"}}
 
   /v4/magnet/delete:
     post:
@@ -683,6 +803,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                delete_magnet:
+                  summary: "Delete magnet"
+                  value: {"status": "success", "data": {"message": "Magnet was successfully deleted"}}
+                error:
+                  summary: "Error"
+                  value: {"status": "error", "error": {"code": "MAGNET_INVALID_ID", "message": "This magnet ID does not exists or is invalid demo"}}
 
   /v4/magnet/restart:
     post:
@@ -713,6 +840,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RestartMagnetsResponse"
+              examples:
+                restart_magnet:
+                  summary: "Restart magnet"
+                  value: {"status": "success", "data": {"id": 99999, "message": "Magnet was successfully restarted"}}
+                error:
+                  summary: "Error"
+                  value: {"status": "error", "error": {"code": "MAGNET_INVALID_ID", "message": "This magnet ID does not exists or is invalid demo"}}
 
   /v4/user/links:
     get:
@@ -728,6 +862,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SavedLinksResponse"
+              examples:
+                get_user_links:
+                  summary: "Get user links"
+                  value: {"status": "success", "data": {"links": [{"link": "https://example.com/l1ub83vil5c3", "filename": "ubuntu.16.04.1.iso", "size": 671088640, "date": 1546431734, "host": "example"}, {"link": "https://example.com/aaaabbbbcccc", "filename": "winter.holidays.photos.zip", "size": 91088640, "date": 1546421734, "host": "example"}]}}
 
   /v4/user/links/save:
     post:
@@ -754,6 +892,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                save_links:
+                  summary: "Save links"
+                  value: {"status": "success", "data": {"message": "Links were sucessfully saved"}}
 
   /v4/user/links/delete:
     post:
@@ -780,6 +922,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                delete_link:
+                  summary: "Delete link"
+                  value: {"status": "success", "data": {"message": "Links were sucessfully deleted"}}
 
   /v4/user/history:
     get:
@@ -798,6 +944,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HistoryResponse"
+              examples:
+                get_history:
+                  summary: "Get history"
+                  value: {"status": "success", "data": {"links": [{"link": "http://example.com/file2MB.txt", "link_dl": "", "filename": "file2MB.txt", "size": 671088640, "date": 1546431734, "host": "example", "error": ""}, {"link": "http://example.com/file10MB.txt", "link_dl": "", "filename": "file10MB.txt", "size": 91088640, "date": 1546421734, "host": "example", "error": ""}]}}
 
   /v4/user/history/delete:
     post:
@@ -813,6 +963,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                purge_history:
+                  summary: "Purge history"
+                  value: {"status": "success", "data": {"message": "Recent links history was successfully purged"}}
 
   /v4/voucher/balance:
     get:
@@ -829,6 +983,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/VoucherBalanceResponse"
+              examples:
+                reseller:
+                  summary: "From the official docs (reseller accounts only, not checked live)"
+                  value: {"status": "success", "data": {"balance": 51.6}}
 
   /v4/voucher/get:
     post:
@@ -855,6 +1013,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/VouchersResponse"
+              examples:
+                reseller:
+                  summary: "From the official docs (reseller accounts only, not checked live)"
+                  value: {"status": "success", "data": {"codes": ["AAAAAA-BBBBBB-CCCCCC-DDDDDD", "EEEEEE-FFFFFF-GGGGGG-HHHHHH"], "partialList": true}}
 
   /v4/voucher/generate:
     post:
@@ -878,6 +1040,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneratedVouchersResponse"
+              examples:
+                reseller:
+                  summary: "From the official docs (reseller accounts only, not checked live)"
+                  value: {"status": "success", "data": {"codes": ["AAAAAA-BBBBBB-CCCCCC-DDDDDD", "EEEEEE-FFFFFF-GGGGGG-HHHHHH"], "pricePerVoucher": 3.2, "total": 6.4, "balance": 18.21}}
 
 components:
   securitySchemes:

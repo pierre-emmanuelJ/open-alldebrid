@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AllDebrid API reference</title>
+    <meta
+      name="description"
+      content="Interactive reference for the AllDebrid API v4 and v4.1, from the open-alldebrid OpenAPI 3.1 spec checked against the live API. Try every endpoint with the demo key." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f5a524'/%3E%3Cpath d='M9 22l7-13 7 13' stroke='%23111' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.71.0/dist/browser/standalone.js"></script>
+    <script>
+      const SDKS = [
+        { key: "go", lang: "go", label: "Go SDK", setup: "client := alldebrid.New(apiKey)\n\n" },
+        { key: "typescript", lang: "javascript", label: "TypeScript SDK", setup: "const client = new AllDebrid({ apiKey });\n\n" },
+        { key: "python", lang: "python", label: "Python SDK", setup: "client = AllDebrid(api_key)\n\n" },
+      ];
+
+      async function loadYaml(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+        return jsyaml.load(await response.text());
+      }
+
+      // Adds the SDK samples of docs/code-samples.yaml to each operation.
+      function withCodeSamples(spec, samples) {
+        for (const item of Object.values(spec.paths)) {
+          for (const operation of Object.values(item)) {
+            const sample = samples?.[operation.operationId];
+            if (!sample) continue;
+            operation["x-codeSamples"] = SDKS.filter((sdk) => sample[sdk.key]).map((sdk) => ({
+              lang: sdk.lang,
+              label: sdk.label,
+              source: sdk.setup + sample[sdk.key],
+            }));
+          }
+        }
+        return spec;
+      }
+
+      async function main() {
+        const spec = await loadYaml("./openapi.yaml");
+        let samples = {};
+        try {
+          samples = await loadYaml("./docs/code-samples.yaml");
+        } catch (err) {
+          console.warn("No SDK samples:", err);
+        }
+        Scalar.createApiReference("#app", {
+          content: withCodeSamples(spec, samples),
+          metaData: { title: "AllDebrid API reference" },
+          // The API allows cross-origin requests, so "Try it" calls it directly.
+          authentication: {
+            preferredSecurityScheme: "bearerAuth",
+            securitySchemes: {
+              // A public demo key: the API answers it with static sample data.
+              bearerAuth: { token: "staticDemoApikeyPrem" },
+            },
+          },
+          defaultHttpClient: { targetKey: "shell", clientKey: "curl" },
+          documentDownloadType: "both",
+          showOperationId: true,
+          hideClientButton: true,
+          showDeveloperTools: "never",
+          agent: { disabled: true },
+          mcp: { disabled: true },
+        });
+      }
+
+      main().catch((err) => {
+        document.getElementById("app").textContent = `Could not load the API description: ${err.message}`;
+      });
+    </script>
+  </body>
+</html>

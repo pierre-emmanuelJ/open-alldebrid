@@ -314,3 +314,46 @@ func TestUnknownFieldsWalker(t *testing.T) {
 		t.Fatalf("unknown fields = %v, want %v", unknown, want)
 	}
 }
+
+// TestExamplesMatchSchemas validates every response example of the spec
+// against its schema, so the examples cannot drift from the shapes.
+func TestExamplesMatchSchemas(t *testing.T) {
+	s := loadSpec(t)
+	paths, _ := s.doc["paths"].(map[string]any)
+	count := 0
+	for path, item := range paths {
+		for method, op := range item.(map[string]any) {
+			media, _ := dig(op, "responses", "200", "content", "application/json").(map[string]any)
+			name, err := s.responseSchema(method, path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			values := map[string]any{}
+			if v, ok := media["example"]; ok {
+				values["example"] = v
+			}
+			if exs, ok := media["examples"].(map[string]any); ok {
+				for k, ex := range exs {
+					values[k] = dig(ex, "value")
+				}
+			}
+			if len(values) == 0 {
+				t.Errorf("%s %s has no response example", method, path)
+			}
+			for k, v := range values {
+				count++
+				schemaErr, unknown, err := s.validate(name, v)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if schemaErr != nil {
+					t.Errorf("%s %s example %s does not match %s:\n%v", method, path, k, name, schemaErr)
+				}
+				if len(unknown) > 0 {
+					t.Errorf("%s %s example %s has undeclared fields: %v", method, path, k, unknown)
+				}
+			}
+		}
+	}
+	t.Logf("%d examples checked", count)
+}
