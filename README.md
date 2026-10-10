@@ -5,7 +5,7 @@
 
 An OpenAPI 3.1 description of the [AllDebrid](https://alldebrid.com) API (v4
 and v4.1), checked against the live API, with SDKs for Go, TypeScript,
-Python, Kotlin, PHP, Rust and C# built on it.
+Python, Kotlin, PHP, Rust, C# and Swift built on it.
 
 **[Interactive reference →](https://pierre-emmanuelj.github.io/open-alldebrid/)**
 Every endpoint, with real response examples, SDK samples, and a "Try it"
@@ -23,12 +23,13 @@ button that calls the API with the public demo key.
 | [`sdks/php`](sdks/php) | PHP 8.2+ client with readonly typed models, no dependencies beyond ext-curl. |
 | [`sdks/rust`](sdks/rust) | Async Rust client on reqwest, serde and tokio. |
 | [`sdks/csharp`](sdks/csharp) | .NET 8/10 client on HttpClient and System.Text.Json, no dependencies. |
+| [`sdks/swift`](sdks/swift) | Swift client for iOS, macOS, tvOS, watchOS and Linux: async/await on URLSession. |
 | [`contract/`](contract) | Tests that replay the API against the spec. |
 | [`ERRATA.md`](ERRATA.md) | Where the official docs and the live API disagree. |
 
 The TypeScript, Python, Kotlin, PHP, Rust and C# packages are ready to publish
 (on npm, PyPI, Maven Central, Packagist, crates.io and NuGet) but are not
-published yet.
+published yet; Go and Swift install straight from this repository.
 
 ## Why a spec "checked against the live API"
 

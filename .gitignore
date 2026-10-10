@@ -37,3 +37,7 @@ sdks/rust/target/
 # .NET
 sdks/csharp/**/bin/
 sdks/csharp/**/obj/
+
+# Swift
+sdks/swift/.build/
+sdks/swift/.swiftpm/

@@ -200,6 +200,37 @@ jobs:
       - run: dotnet format OpenAllDebrid.slnx --verify-no-changes
       - run: dotnet test --solution OpenAllDebrid.slnx
 
+  swift:
+    name: Swift SDK (Linux)
+    runs-on: ubuntu-latest
+    container: swift:6.4
+    defaults:
+      run:
+        working-directory: sdks/swift
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Generated code is up to date
+        run: |
+          apt-get update -qq && apt-get install -y -qq git python3-yaml >/dev/null
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          python3 ../../scripts/gen_models.py swift Sources/OpenAllDebrid/Models.generated.swift
+          git diff --exit-code -- .
+      - run: swift format lint -r --strict Sources Tests Package.swift
+      - run: swift test -Xswiftc -warnings-as-errors
+      - name: The root Package.swift builds
+        working-directory: .
+        run: swift build
+
+  swift-apple:
+    name: Swift SDK (macOS)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: sdks/swift
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: swift test
+
   python:
     name: Python SDK (${{ matrix.python }})
     runs-on: ubuntu-latest

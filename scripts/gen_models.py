@@ -12,7 +12,7 @@ classes, with the same rules everywhere:
 - required fields are non-optional, every other field is optional.
 
 Usage: python scripts/gen_models.py <language> <output file>
-Languages: kotlin, rust, csharp, php (the output is the src directory)
+Languages: kotlin, rust, csharp, swift, php (the output is the src directory)
 """
 
 from __future__ import annotations
@@ -421,6 +421,84 @@ def emit_csharp(models: list[Model], codes: list[str], namespace: str) -> str:
     return "\n".join(out)
 
 
+# ------------------------------------------------------------------------ Swift
+
+SWIFT_FLEX = {
+    "StringOrInteger": ("FlexString", None),
+    "StringOrStrings": ("[String]", "Strings"),
+    "MagnetList": ("[Magnet]", "Magnets"),
+    "QuotaMap": ("[String: Int64]", "Quotas"),
+}
+
+
+def swift_type(t: TypeRef) -> str:
+    prim = {"string": "String", "int": "Int", "long": "Int64", "double": "Double", "bool": "Bool"}
+    if t.kind in prim:
+        return prim[t.kind]
+    if t.kind == "list":
+        assert t.item
+        return f"[{swift_type(t.item)}]"
+    if t.kind == "map":
+        assert t.item
+        return f"[String: {swift_type(t.item)}]"
+    if t.kind == "flex":
+        return SWIFT_FLEX[t.name][0]
+    return t.name
+
+
+def swift_doc(text: str, indent: str) -> list[str]:
+    return [f"{indent}/// {line}".rstrip() for line in doc_lines(text)]
+
+
+def swift_const(code: str) -> str:
+    return "notFound" if code == "404" else camel(code.lower())
+
+
+def emit_swift(models: list[Model], codes: list[str]) -> str:
+    out = ["// Generated from openapi.yaml by scripts/gen_models.py. DO NOT EDIT.", "// swift-format-ignore-file", "",
+           "import Foundation", ""]
+    for m in models:
+        if m.alias_of is not None:
+            out += swift_doc(m.description, "")
+            out += [f"public typealias {m.name} = {swift_type(m.alias_of)}", ""]
+            continue
+        out += swift_doc(m.description, "")
+        out.append(f"public struct {m.name}: Decodable, Sendable, Equatable {{")
+        fields = [(f, camel(f.json_name)) for f in m.fields]
+        for f, prop in fields:
+            out += swift_doc(f.description, "    ")
+            out.append(f"    public let {prop}: {swift_type(f.type)}{'' if f.required else '?'}")
+        # Memberwise initializer, public so apps and tests can build values.
+        params = ", ".join(f"{prop}: {swift_type(f.type)}{'' if f.required else '? = nil'}" for f, prop in fields)
+        out += ["", f"    public init({params}) {{", *[f"        self.{prop} = {prop}" for _, prop in fields], "    }", ""]
+        out.append("    private enum CodingKeys: String, CodingKey {")
+        for f, prop in fields:
+            out.append(f"        case {prop}" + (f' = "{f.json_name}"' if prop != f.json_name else ""))
+        out += ["    }", "", "    public init(from decoder: any Decoder) throws {",
+                "        let c = try decoder.container(keyedBy: CodingKeys.self)"]
+        for f, prop in fields:
+            flex = SWIFT_FLEX[f.type.name][1] if f.type.kind == "flex" else None
+            if flex:
+                call = f"decode{flex}(forKey: .{prop})" if f.required else f"decode{flex}IfPresent(forKey: .{prop})"
+            else:
+                call = f"decode{'' if f.required else 'IfPresent'}({swift_type(f.type)}.self, forKey: .{prop})"
+            out.append(f"        {prop} = try c.{call}")
+        out += ["    }", "}", ""]
+    out += [
+        "/// Error codes the API is known to return. The API may return others.",
+        "public enum ErrorCode {",
+        *[f'    public static let {swift_const(c)} = "{c}"' for c in codes],
+        "",
+        "    /// Every code of the spec.",
+        "    public static let all: [String] = [",
+        *[f"        {swift_const(c)}," for c in codes],
+        "    ]",
+        "}",
+        "",
+    ]
+    return "\n".join(out)
+
+
 # ------------------------------------------------------------------------- Rust
 
 RUST_KEYWORDS = {"type", "match", "ref", "self", "struct", "fn", "move", "mod", "use", "impl", "in", "loop", "where"}
@@ -525,6 +603,8 @@ def main() -> int:
         text = emit_kotlin(models, codes, "io.github.pierreemmanuelj.alldebrid")
     elif lang == "rust":
         text = emit_rust(models, codes)
+    elif lang == "swift":
+        text = emit_swift(models, codes)
     elif lang == "csharp":
         text = emit_csharp(models, codes, "OpenAllDebrid")
     elif lang == "php":

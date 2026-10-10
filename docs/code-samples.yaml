@@ -10,6 +10,7 @@
 #   PHP:        $client = new AllDebrid($apiKey);
 #   Rust:       let client = AllDebrid::new(api_key);
 #   C#:         var client = new AllDebrid(apiKey);
+#   Swift:      let client = AllDebrid(apiKey: apiKey)
 
 ping:
   go: |
@@ -26,6 +27,8 @@ ping:
     client.ping().await?;
   csharp: |
     await client.PingAsync();
+  swift: |
+    try await client.ping()
 
 getPin:
   go: |
@@ -56,6 +59,10 @@ getPin:
     var pin = await client.GetPinAsync();
     Console.WriteLine($"Open {pin.UserUrl}");
     var apiKey = await client.WaitForPinAsync(pin);
+  swift: |
+    let pin = try await client.getPin()
+    print("Open \(pin.userUrl)")
+    let apiKey = try await client.waitForPin(pin)
 
 checkPin:
   go: |
@@ -86,6 +93,9 @@ checkPin:
   csharp: |
     var state = await client.CheckPinAsync(pin.Pin, pin.Check);
     if (state.Activated) Console.WriteLine(state.Apikey);
+  swift: |
+    let state = try await client.checkPin(pin: pin.pin, check: pin.check)
+    if state.activated { print(state.apikey ?? "") }
 
 getHosts:
   go: |
@@ -116,6 +126,11 @@ getHosts:
     var hosts = await client.HostsAsync();
     foreach (var (name, host) in hosts.Hosts)
         Console.WriteLine($"{name} {string.Join(", ", host.Domains)}");
+  swift: |
+    let hosts = try await client.hosts()
+    for (name, host) in hosts.hosts {
+        print(name, host.domains)
+    }
 
 getHostDomains:
   go: |
@@ -132,6 +147,8 @@ getHostDomains:
     let domains = client.host_domains().await?;
   csharp: |
     var domains = await client.HostDomainsAsync();
+  swift: |
+    let domains = try await client.hostDomains()
 
 getHostPriority:
   go: |
@@ -148,6 +165,8 @@ getHostPriority:
     let ranks = client.host_priority().await?; // host -> rank
   csharp: |
     var ranks = await client.HostPriorityAsync(); // host -> rank
+  swift: |
+    let ranks = try await client.hostPriority() // host -> rank
 
 getUser:
   go: |
@@ -171,6 +190,9 @@ getUser:
   csharp: |
     var user = await client.UserAsync();
     Console.WriteLine($"{user.Username} {user.IsPremium}");
+  swift: |
+    let user = try await client.user()
+    print(user.username, user.isPremium)
 
 getUserHosts:
   go: |
@@ -194,6 +216,9 @@ getUserHosts:
   csharp: |
     var hosts = await client.UserHostsAsync();
     Console.WriteLine(hosts["rapidgator"].Quota);
+  swift: |
+    let hosts = try await client.userHosts()
+    print(hosts["rapidgator"]?.quota ?? 0)
 
 getVerificationStatus:
   go: |
@@ -237,6 +262,11 @@ getVerificationStatus:
         var v = await client.VerificationStatusAsync(e.Token!);
         Console.WriteLine(v.Verif); // waiting, allowed or denied
     }
+  swift: |
+    } catch AllDebridError.api(let code, _, let token?) where code == ErrorCode.authBlocked {
+        let v = try await client.verificationStatus(token: token)
+        print(v.verif) // waiting, allowed or denied
+    }
 
 resendVerification:
   go: |
@@ -253,6 +283,8 @@ resendVerification:
     client.resend_verification(&token).await?;
   csharp: |
     await client.ResendVerificationAsync(token);
+  swift: |
+    try await client.resendVerification(token: token)
 
 clearNotification:
   go: |
@@ -269,6 +301,8 @@ clearNotification:
     client.clear_notification(&user.notifications[0]).await?;
   csharp: |
     await client.ClearNotificationAsync(user.Notifications[0]);
+  swift: |
+    try await client.clearNotification(code: user.notifications[0])
 
 getLinkInfos:
   go: |
@@ -319,6 +353,11 @@ getLinkInfos:
         if (info.Error is not null) continue; // this link is down or unsupported
         Console.WriteLine($"{info.Filename} {info.Size}");
     }
+  swift: |
+    let infos = try await client.linkInfos(["https://1fichier.com/?abcdefghij"])
+    for info in infos where info.error == nil {
+        print(info.filename ?? "", info.size ?? 0)
+    }
 
 extractRedirector:
   go: |
@@ -335,6 +374,8 @@ extractRedirector:
     let links = client.extract_redirector("https://protected.example/abc").await?;
   csharp: |
     var links = await client.ExtractRedirectorAsync("https://protected.example/abc");
+  swift: |
+    let links = try await client.extractRedirector("https://protected.example/abc")
 
 unlockLink:
   go: |
@@ -367,6 +408,9 @@ unlockLink:
   csharp: |
     var u = await client.UnlockAsync("https://1fichier.com/?abcdefghij");
     var link = u.Delayed is { } id ? await client.WaitDelayedLinkAsync(id.Value) : u.Link;
+  swift: |
+    let u = try await client.unlock("https://1fichier.com/?abcdefghij")
+    let link = if let id = u.delayed { try await client.waitDelayedLink(id.value) } else { u.link }
 
 getStreamingLink:
   go: |
@@ -391,6 +435,9 @@ getStreamingLink:
   csharp: |
     var u = await client.UnlockAsync(videoUrl);
     var s = await client.StreamingLinkAsync(u.Id!, u.Streaming![0].Id);
+  swift: |
+    let u = try await client.unlock(videoURL)
+    let s = try await client.streamingLink(id: u.id!, stream: u.streaming![0].id)
 
 getDelayedLink:
   go: |
@@ -407,6 +454,8 @@ getDelayedLink:
     let link = client.wait_delayed_link(&delayed_id, Duration::from_secs(5)).await?;
   csharp: |
     var link = await client.WaitDelayedLinkAsync(delayedId, TimeSpan.FromSeconds(5));
+  swift: |
+    let link = try await client.waitDelayedLink(delayedID, interval: .seconds(5))
 
 uploadMagnets:
   go: |
@@ -424,6 +473,8 @@ uploadMagnets:
     let magnets = client.upload_magnets(&["magnet:?xt=urn:btih:..."]).await?;
   csharp: |
     var magnets = await client.UploadMagnetsAsync(new[] { "magnet:?xt=urn:btih:..." });
+  swift: |
+    let magnets = try await client.uploadMagnets(["magnet:?xt=urn:btih:..."])
 
 uploadTorrentFiles:
   go: |
@@ -448,6 +499,9 @@ uploadTorrentFiles:
   csharp: |
     var file = new TorrentFile("file.torrent", await File.ReadAllBytesAsync("file.torrent"));
     var magnets = await client.UploadTorrentFilesAsync(new[] { file });
+  swift: |
+    let file = TorrentFile(name: "file.torrent", content: try Data(contentsOf: torrentURL))
+    let magnets = try await client.uploadTorrentFiles([file])
 
 getMagnetStatus:
   go: |
@@ -492,6 +546,12 @@ getMagnetStatus:
 
     var live = client.LiveMagnets(); // only transfers changes
     var magnets = await live.PollAsync();
+  swift: |
+    let all = try await client.magnets()
+    let one = try await client.magnet(id: id) // with its files
+
+    let live = client.liveMagnets() // only transfers changes
+    let magnets = try await live.poll()
 
 getMagnetFiles:
   go: |
@@ -508,6 +568,8 @@ getMagnetFiles:
     let files = client.magnet_files(&[id1, id2]).await?;
   csharp: |
     var files = await client.MagnetFilesAsync(new[] { id1, id2 });
+  swift: |
+    let files = try await client.magnetFiles(ids: [id1, id2])
 
 deleteMagnet:
   go: |
@@ -524,6 +586,8 @@ deleteMagnet:
     client.delete_magnet(id).await?;
   csharp: |
     await client.DeleteMagnetAsync(id);
+  swift: |
+    try await client.deleteMagnet(id: id)
 
 restartMagnets:
   go: |
@@ -547,6 +611,9 @@ restartMagnets:
   csharp: |
     await client.RestartMagnetAsync(id);
     var results = await client.RestartMagnetsAsync(new[] { id1, id2 });
+  swift: |
+    try await client.restartMagnet(id: id)
+    let results = try await client.restartMagnets(ids: [id1, id2])
 
 getSavedLinks:
   go: |
@@ -563,6 +630,8 @@ getSavedLinks:
     let links = client.saved_links().await?;
   csharp: |
     var links = await client.SavedLinksAsync();
+  swift: |
+    let links = try await client.savedLinks()
 
 saveLinks:
   go: |
@@ -579,6 +648,8 @@ saveLinks:
     client.save_links(&["https://1fichier.com/?abcdefghij"]).await?;
   csharp: |
     await client.SaveLinksAsync(new[] { "https://1fichier.com/?abcdefghij" });
+  swift: |
+    try await client.saveLinks(["https://1fichier.com/?abcdefghij"])
 
 deleteSavedLinks:
   go: |
@@ -595,6 +666,8 @@ deleteSavedLinks:
     client.delete_saved_links(&["https://1fichier.com/?abcdefghij"]).await?;
   csharp: |
     await client.DeleteSavedLinksAsync(new[] { "https://1fichier.com/?abcdefghij" });
+  swift: |
+    try await client.deleteSavedLinks(["https://1fichier.com/?abcdefghij"])
 
 getHistory:
   go: |
@@ -611,6 +684,8 @@ getHistory:
     let links = client.history().await?;
   csharp: |
     var links = await client.HistoryAsync();
+  swift: |
+    let links = try await client.history()
 
 purgeHistory:
   go: |
@@ -627,6 +702,8 @@ purgeHistory:
     client.purge_history().await?;
   csharp: |
     await client.PurgeHistoryAsync();
+  swift: |
+    try await client.purgeHistory()
 
 getVoucherBalance:
   go: |
@@ -643,6 +720,8 @@ getVoucherBalance:
     let balance = client.voucher_balance().await?;
   csharp: |
     var balance = await client.VoucherBalanceAsync();
+  swift: |
+    let balance = try await client.voucherBalance()
 
 getVouchers:
   go: |
@@ -659,6 +738,8 @@ getVouchers:
     let v = client.vouchers(30, 5).await?;
   csharp: |
     var v = await client.VouchersAsync(30, 5);
+  swift: |
+    let v = try await client.vouchers(durationDays: 30, count: 5)
 
 generateVouchers:
   go: |
@@ -675,3 +756,5 @@ generateVouchers:
     let v = client.generate_vouchers(30, 5).await?;
   csharp: |
     var v = await client.GenerateVouchersAsync(30, 5);
+  swift: |
+    let v = try await client.generateVouchers(durationDays: 30, count: 5)
