@@ -28,6 +28,7 @@ func TestCodeSamples(t *testing.T) {
 		"typescript": sdkMethods(t, `(?m)^  (?:async )?(\w+)\(`, "sdks/typescript/src/index.ts"),
 		"python":     sdkMethods(t, `(?m)^    (?:async )?def (\w+)\(`, "sdks/python/src/open_alldebrid/_async_client.py"),
 		"php":        sdkMethods(t, `(?m)^    public function (\w+)\(`, "sdks/php/src/AllDebrid.php"),
+		"rust":       sdkMethods(t, `(?m)^    pub (?:async )?fn (\w+)\(`, "sdks/rust/src/client.rs"),
 		"kotlin":     sdkMethods(t, `(?m)^    public (?:suspend )?fun (\w+)\(`, "sdks/kotlin/src/main/kotlin/io/github/pierreemmanuelj/alldebrid/AllDebrid.kt"),
 	}
 	call := regexp.MustCompile(`\bclient(?:\.|->)(\w+)\(`)

@@ -139,6 +139,43 @@ jobs:
       - run: vendor/bin/phpunit
       - run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
+  rust:
+    name: Rust SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdks/rust
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: "1.98"
+          components: clippy, rustfmt
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Generated code is up to date
+        run: |
+          python -m pip install pyyaml==6.0.3
+          python ../../scripts/gen_models.py rust src/models.rs
+          git diff --exit-code -- .
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+
+  rust-msrv:
+    name: Rust SDK (MSRV 1.85)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdks/rust
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: "1.85"
+      - run: cargo build
+
   python:
     name: Python SDK (${{ matrix.python }})
     runs-on: ubuntu-latest

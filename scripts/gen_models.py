@@ -12,7 +12,7 @@ classes, with the same rules everywhere:
 - required fields are non-optional, every other field is optional.
 
 Usage: python scripts/gen_models.py <language> <output file>
-Languages: kotlin, php (the output is the src directory)
+Languages: kotlin, rust, php (the output is the src directory)
 """
 
 from __future__ import annotations
@@ -336,6 +336,97 @@ def json_str(s: str) -> str:
     return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
+# ------------------------------------------------------------------------- Rust
+
+RUST_KEYWORDS = {"type", "match", "ref", "self", "struct", "fn", "move", "mod", "use", "impl", "in", "loop", "where"}
+RUST_FLEX = {
+    "StringOrInteger": ("FlexString", None),
+    "StringOrStrings": ("Vec<String>", "strings"),
+    "MagnetList": ("Vec<Magnet>", "magnets"),
+    "QuotaMap": ("HashMap<String, i64>", "quotas"),
+}
+
+
+def snake(name: str) -> str:
+    s = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
+    return re.sub(r"\W+", "_", s).lower().strip("_")
+
+
+def rust_type(t: TypeRef) -> str:
+    prim = {"string": "String", "int": "i64", "long": "i64", "double": "f64", "bool": "bool", "any": "serde_json::Value"}
+    if t.kind in prim:
+        return prim[t.kind]
+    if t.kind == "list":
+        assert t.item
+        return f"Vec<{rust_type(t.item)}>"
+    if t.kind == "map":
+        assert t.item
+        return f"HashMap<String, {rust_type(t.item)}>"
+    if t.kind == "flex":
+        return RUST_FLEX[t.name][0]
+    return t.name
+
+
+def rust_doc(text: str, indent: str) -> list[str]:
+    return [f"{indent}/// {line}".rstrip() for line in doc_lines(text)]
+
+
+def emit_rust(models: list[Model], codes: list[str]) -> str:
+    out = [
+        "// Generated from openapi.yaml by scripts/gen_models.py. DO NOT EDIT.",
+        "",
+        "#![allow(clippy::doc_markdown, clippy::doc_lazy_continuation)]",
+        "",
+        "use std::collections::HashMap;",
+        "",
+        "use serde::{Deserialize, Serialize};",
+        "",
+        "use crate::flex::{self, FlexString};",
+        "",
+    ]
+    for m in models:
+        if m.alias_of is not None:
+            out += rust_doc(m.description, "")
+            out += [f"pub type {m.name} = {rust_type(m.alias_of)};", ""]
+            continue
+        out += rust_doc(m.description, "")
+        out += ["#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]", f"pub struct {m.name} {{"]
+        for f in m.fields:
+            name = snake(f.json_name)
+            ident = f"r#{name}" if name in RUST_KEYWORDS else name
+            out += rust_doc(f.description, "    ")
+            attrs = []
+            if name != f.json_name:
+                attrs.append(f'rename = "{f.json_name}"')
+            typ = rust_type(f.type)
+            flex_fn = RUST_FLEX[f.type.name][1] if f.type.kind == "flex" else None
+            if not f.required:
+                attrs.append("default")
+                attrs.append('skip_serializing_if = "Option::is_none"')
+                if flex_fn:
+                    attrs.append(f'deserialize_with = "flex::opt_{flex_fn}"')
+                typ = f"Option<{typ}>"
+            elif flex_fn:
+                attrs.append(f'deserialize_with = "flex::{flex_fn}"')
+            if attrs:
+                out.append(f"    #[serde({', '.join(attrs)})]")
+            out.append(f"    pub {ident}: {typ},")
+        out += ["}", ""]
+    out += [
+        "/// Error codes the API is known to return. The API may return others.",
+        "pub mod error_codes {",
+        *[f'    pub const {code_constant(c)}: &str = "{c}";' for c in codes],
+        "",
+        "    /// Every code of the spec.",
+        "    pub const ALL: &[&str] = &[",
+        *[f"        {code_constant(c)}," for c in codes],
+        "    ];",
+        "}",
+        "",
+    ]
+    return "\n".join(out)
+
+
 # ------------------------------------------------------------------------- main
 
 
@@ -347,6 +438,8 @@ def main() -> int:
     models, codes = load_models()
     if lang == "kotlin":
         text = emit_kotlin(models, codes, "io.github.pierreemmanuelj.alldebrid")
+    elif lang == "rust":
+        text = emit_rust(models, codes)
     elif lang == "php":
         # The output is the src directory; models go to src/Model/.
         for old in (output / "Model").glob("*.php"):

@@ -30,3 +30,6 @@ sdks/php/vendor/
 sdks/php/composer.lock
 sdks/php/.phpunit.cache/
 sdks/php/.phpunit.result.cache
+
+# Rust
+sdks/rust/target/

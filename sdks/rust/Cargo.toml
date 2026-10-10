@@ -1,0 +1,35 @@
+[package]
+name = "open-alldebrid"
+version = "1.0.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Async client for the AllDebrid API, built from the open-alldebrid OpenAPI spec"
+license = "MIT"
+repository = "https://github.com/pierre-emmanuelJ/open-alldebrid"
+homepage = "https://github.com/pierre-emmanuelJ/open-alldebrid/tree/master/sdks/rust"
+readme = "README.md"
+keywords = ["alldebrid", "debrid", "magnet", "torrent", "api"]
+categories = ["api-bindings", "web-programming::http-client"]
+
+[lib]
+name = "open_alldebrid"
+
+[dependencies]
+reqwest = { version = "0.13.5", features = ["form", "query", "multipart"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+tokio = { version = "1.53.0", features = ["time"] }
+
+[dev-dependencies]
+tokio = { version = "1.53.0", features = ["macros", "rt-multi-thread", "time"] }
+wiremock = "0.6.5"
+url = "2.5"
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
