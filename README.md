@@ -29,7 +29,9 @@ button that calls the API with the public demo key.
 
 The TypeScript, Python, Kotlin, PHP, Rust and C# packages are ready to publish
 (on npm, PyPI, Maven Central, Packagist, crates.io and NuGet) but are not
-published yet; Go and Swift install straight from this repository.
+published yet; Go and Swift install straight from this repository. The root
+`Package.swift` and `composer.json` exist so SwiftPM and Packagist can use the
+repository as it is.
 
 ## Why a spec "checked against the live API"
 

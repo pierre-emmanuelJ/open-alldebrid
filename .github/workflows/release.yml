@@ -10,7 +10,16 @@ name: Release
 # - Create the "npm" and "pypi" environments in the repository settings,
 #   ideally with a required reviewer.
 #
-# The Go SDK needs no workflow: push a tag named sdks/go/vX.Y.Z.
+# - crates.io and NuGet: add the CARGO_REGISTRY_TOKEN and NUGET_API_KEY
+#   secrets to the "crates" and "nuget" environments.
+#
+# The others need no workflow:
+# - Go: push a tag named sdks/go/vX.Y.Z.
+# - Swift: push a tag named X.Y.Z (the root Package.swift is the package).
+# - PHP: submit the repository once on packagist.org (the root composer.json
+#   is the package); Packagist then follows the tags.
+# - Kotlin: Maven Central needs a Sonatype account and a GPG key; publish
+#   with ./gradlew publish once they are set up.
 
 on:
   workflow_dispatch:
@@ -19,7 +28,7 @@ on:
         description: SDK to publish
         required: true
         type: choice
-        options: [typescript, python]
+        options: [typescript, python, rust, csharp]
 
 permissions:
   contents: read
@@ -71,3 +80,40 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         with:
           packages-dir: sdks/python/dist
+
+  rust:
+    if: inputs.sdk == 'rust'
+    runs-on: ubuntu-latest
+    environment: crates
+    defaults:
+      run:
+        working-directory: sdks/rust
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: "1.98"
+      - run: cargo test
+      - run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  csharp:
+    if: inputs.sdk == 'csharp'
+    runs-on: ubuntu-latest
+    environment: nuget
+    defaults:
+      run:
+        working-directory: sdks/csharp
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - run: dotnet test --solution OpenAllDebrid.slnx
+      - run: dotnet pack src/OpenAllDebrid/OpenAllDebrid.csproj -c Release -o out
+      - run: dotnet nuget push "out/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY"
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
