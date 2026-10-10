@@ -612,8 +612,9 @@ paths:
         `session` and start with `counter=0`. The first answer is a full list
         with `fullsync: true` and the `counter` to send next. Later answers
         only hold the magnets that changed, with only their changed fields
-        (`magnets` may then be an array or a single object). If the counter
-        is out of sync, the API answers with a new full sync.
+        (`magnets` may then be an array or a single object). A deleted magnet
+        comes as `{"id": ..., "deleted": true}`. If the counter is out of sync,
+        the API answers with a new full sync.
 
         Errors: `MAGNET_INVALID_ID`.
       requestBody:
@@ -1527,6 +1528,7 @@ components:
         name: { type: string }
         tb:
           type: number
+          format: double
           description: Audio-only streams. Total bitrate.
         abr:
           type: integer
@@ -1826,6 +1828,7 @@ components:
           description: Bytes per second (while uploading).
         processingPerc:
           type: number
+          format: double
           description: Progress percentage while processing.
         uploadDate:
           type: integer
@@ -1849,6 +1852,9 @@ components:
           type: array
           items: { $ref: "#/components/schemas/FileNode" }
           description: Only when a single magnet is requested with `id`.
+        deleted:
+          type: boolean
+          description: Live mode deltas only. The magnet was deleted; drop it from the local state.
 
     MagnetList:
       description: |
@@ -2049,6 +2055,7 @@ components:
       properties:
         balance:
           type: number
+          format: double
           description: The reseller balance.
 
     VoucherBalanceResponse:
@@ -2103,12 +2110,14 @@ components:
         codes:
           type: array
           items: { type: string }
-        pricePerVoucher: { type: number }
+        pricePerVoucher: { type: number, format: double }
         total:
           type: number
+          format: double
           description: Total price of the request.
         balance:
           type: number
+          format: double
           description: The balance left after the generation.
 
     GeneratedVouchersResponse:

@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/v2.8.0/configuration-schema.json
+package: alldebrid
+output: types.gen.go
+generate:
+  models: true
+compatibility:
+  always-prefix-enum-values: true
+output-options:
+  overlay:
+    path: overlay.yaml
+  prefer-skip-optional-pointer: true
+  name-normalizer: ToCamelCaseWithInitialisms

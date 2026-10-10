@@ -115,7 +115,7 @@ func do(t *testing.T, req request) result {
 		// The error may contain the URL but never the key, which is in a header.
 		t.Fatalf("%s %s: %v", req.method, req.path, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	raw, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)

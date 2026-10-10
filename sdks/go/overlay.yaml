@@ -1,0 +1,25 @@
+# Adjusts openapi.yaml for Go code generation only: models are generated,
+# the client in client.go is hand-written (it encodes forms the PHP way).
+overlay: 1.0.0
+info:
+  title: open-alldebrid Go overlay
+  version: 1.0.0
+actions:
+  - target: $.paths.*.*.requestBody
+    description: client.go builds the request bodies.
+    remove: true
+  - target: $.paths.*.*.parameters
+    description: client.go builds the query strings.
+    remove: true
+  - target: $.components.schemas.StringOrInteger
+    update:
+      x-go-type: FlexString
+  - target: $.components.schemas.StringOrStrings
+    update:
+      x-go-type: Strings
+  - target: $.components.schemas.MagnetList
+    update:
+      x-go-type: Magnets
+  - target: $.components.schemas.QuotaMap
+    update:
+      x-go-type: Quotas
